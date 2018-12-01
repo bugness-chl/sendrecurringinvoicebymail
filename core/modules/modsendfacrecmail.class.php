@@ -52,7 +52,7 @@ class modsendfacrecmail extends DolibarrModules
 
 		// Family can be 'base' (core modules),'crm','financial','hr','projects','products','ecm','technic' (transverse modules),'interface' (link with external tools),'other','...'
 		// It is used to group modules by family in module setup page
-		$this->family = "other";
+		$this->family = "crm";
 		// Module position in the family on 2 digits ('01', '10', '20', ...)
 		$this->module_position = '90';
 		// Gives the possibility for the module, to provide his own family info and position of this family (Overwrite $this->family and $this->module_position. Avoid this)
@@ -63,13 +63,13 @@ class modsendfacrecmail extends DolibarrModules
 		// Module description, used if translation string 'ModulesendfacrecmailDesc' not found (sendfacrecmail is name of module).
 		$this->description = "Send generated invoice by email";
 		// Used only if file README.md and README-LL.md not found.
-		$this->descriptionlong = "This module hooks onto the recurring invoice generation to send automatically send the generated PDF.";
+		$this->descriptionlong = "This module hooks onto the recurring invoice generation to automatically send the generated PDF.";
 
 		$this->editor_name = 'Bugness';
 		$this->editor_url = 'https://www.bugness.org';
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
-		$this->version = '0.1';
+		$this->version = '0.1.0';
 
         //Url to the file with your last numberversion of this module
         //$this->url_last_version = 'http://www.example.com/versionmodule.txt';
@@ -105,7 +105,7 @@ class modsendfacrecmail extends DolibarrModules
 
 		// Dependencies
 		$this->hidden = false;			// A condition to hide module
-		$this->depends = array('facture');		// List of module class names as string that must be enabled if this module is enabled. Example: array('always1'=>'modModuleToEnable1','always2'=>'modModuleToEnable2', 'FR1'=>'modModuleToEnableFR'...)
+		$this->depends = array('modFacture');		// List of module class names as string that must be enabled if this module is enabled. Example: array('always1'=>'modModuleToEnable1','always2'=>'modModuleToEnable2', 'FR1'=>'modModuleToEnableFR'...)
 		$this->requiredby = array();	// List of module class names as string to disable if this one is disabled. Example: array('modModuleToDisable1', ...)
 		$this->conflictwith = array();	// List of module class names as string this module is in conflict with. Example: array('modModuleToDisable1', ...)
 		$this->langfiles = array("sendfacrecmail@sendfacrecmail");
