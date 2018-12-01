@@ -46,7 +46,7 @@ class modsendfacrecmail extends DolibarrModules
 
 		// Id for module (must be unique).
 		// Use here a free id (See in Home -> System information -> Dolibarr for list of used modules id).
-		$this->numero = 500000;		// TODO Go on page https://wiki.dolibarr.org/index.php/List_of_modules_id to reserve id number for your module
+		$this->numero = 500331;		// TODO Go on page https://wiki.dolibarr.org/index.php/List_of_modules_id to reserve id number for your module
 		// Key text used to identify module (for permissions, menus, etc...)
 		$this->rights_class = 'sendfacrecmail';
 
@@ -61,15 +61,15 @@ class modsendfacrecmail extends DolibarrModules
 		// Module label (no space allowed), used if translation string 'ModulesendfacrecmailName' not found (sendfacrecmail is name of module).
 		$this->name = preg_replace('/^mod/i','',get_class($this));
 		// Module description, used if translation string 'ModulesendfacrecmailDesc' not found (sendfacrecmail is name of module).
-		$this->description = "sendfacrecmailDescription";
+		$this->description = "Send generated invoice by email";
 		// Used only if file README.md and README-LL.md not found.
-		$this->descriptionlong = "sendfacrecmail description (Long)";
+		$this->descriptionlong = "This module hooks onto the recurring invoice generation to send automatically send the generated PDF.";
 
-		$this->editor_name = 'Editor name';
-		$this->editor_url = 'https://www.example.com';
+		$this->editor_name = 'Bugness';
+		$this->editor_url = 'https://www.bugness.org';
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
-		$this->version = '1.0';
+		$this->version = '0.1';
 
         //Url to the file with your last numberversion of this module
         //$this->url_last_version = 'http://www.example.com/versionmodule.txt';
@@ -82,17 +82,17 @@ class modsendfacrecmail extends DolibarrModules
 
 		// Define some features supported by module (triggers, login, substitutions, menus, css, etc...)
 		$this->module_parts = array(
-		    'triggers' => 1,                                 	// Set this to 1 if module has its own trigger directory (core/triggers)
+			'triggers' => 0,                                 	// Set this to 1 if module has its own trigger directory (core/triggers)
 			'login' => 0,                                    	// Set this to 1 if module has its own login method file (core/login)
-			'substitutions' => 1,                            	// Set this to 1 if module has its own substitution function file (core/substitutions)
+			'substitutions' => 0,                            	// Set this to 1 if module has its own substitution function file (core/substitutions)
 			'menus' => 0,                                    	// Set this to 1 if module has its own menus handler directory (core/menus)
 			'theme' => 0,                                    	// Set this to 1 if module has its own theme directory (theme)
-		    'tpl' => 0,                                      	// Set this to 1 if module overwrite template dir (core/tpl)
+			'tpl' => 0,                                      	// Set this to 1 if module overwrite template dir (core/tpl)
 			'barcode' => 0,                                  	// Set this to 1 if module has its own barcode directory (core/modules/barcode)
 			'models' => 0,                                   	// Set this to 1 if module has its own models directory (core/modules/xxx)
-			'css' => array('/sendfacrecmail/css/sendfacrecmail.css.php'),	// Set this to relative path of css file if module has its own css file
-	 		'js' => array('/sendfacrecmail/js/sendfacrecmail.js.php'),          // Set this to relative path of js file if module must load a js on all pages
-			'hooks' => array('data'=>array('hookcontext1','hookcontext2'), 'entity'=>'0'), 	// Set here all hooks context managed by module. To find available hook context, make a "grep -r '>initHooks(' *" on source code. You can also set hook context 'all'
+			//'css' => array('/sendfacrecmail/css/sendfacrecmail.css.php'),	// Set this to relative path of css file if module has its own css file
+	 		//'js' => array('/sendfacrecmail/js/sendfacrecmail.js.php'),          // Set this to relative path of js file if module must load a js on all pages
+			'hooks' => array('data'=>array('createrecurringinvoices'), 'entity'=>'0'), 	// Set here all hooks context managed by module. To find available hook context, make a "grep -r '>initHooks(' *" on source code. You can also set hook context 'all'
 			'moduleforexternal' => 0							// Set this to 1 if feature of module are opened to external users
 		);
 
@@ -105,12 +105,12 @@ class modsendfacrecmail extends DolibarrModules
 
 		// Dependencies
 		$this->hidden = false;			// A condition to hide module
-		$this->depends = array();		// List of module class names as string that must be enabled if this module is enabled. Example: array('always1'=>'modModuleToEnable1','always2'=>'modModuleToEnable2', 'FR1'=>'modModuleToEnableFR'...)
+		$this->depends = array('facture');		// List of module class names as string that must be enabled if this module is enabled. Example: array('always1'=>'modModuleToEnable1','always2'=>'modModuleToEnable2', 'FR1'=>'modModuleToEnableFR'...)
 		$this->requiredby = array();	// List of module class names as string to disable if this one is disabled. Example: array('modModuleToDisable1', ...)
 		$this->conflictwith = array();	// List of module class names as string this module is in conflict with. Example: array('modModuleToDisable1', ...)
 		$this->langfiles = array("sendfacrecmail@sendfacrecmail");
 		//$this->phpmin = array(5,4);					// Minimum version of PHP required by module
-		$this->need_dolibarr_version = array(4,0);		// Minimum version of Dolibarr required by module
+		$this->need_dolibarr_version = array(9,0);		// Minimum version of Dolibarr required by module
 		$this->warnings_activation = array();			// Warning to show when we activate module. array('always'='text') or array('FR'='textfr','ES'='textes'...)
 		$this->warnings_activation_ext = array();		// Warning to show when we activate an external module. array('always'='text') or array('FR'='textfr','ES'='textes'...)
 		//$this->automatic_activation = array('FR'=>'sendfacrecmailWasAutomaticallyActivatedBecauseOfYourCountryChoice');
@@ -122,7 +122,7 @@ class modsendfacrecmail extends DolibarrModules
 		//                             1=>array('SENDFACRECMAIL_MYNEWCONST2','chaine','myvalue','This is another constant to add',0, 'current', 1)
 		// );
 		$this->const = array(
-			1=>array('SENDFACRECMAIL_MYCONSTANT', 'chaine', 'avalue', 'This is a constant to add', 1, 'allentities', 1)
+			//1=>array('SENDFACRECMAIL_MYCONSTANT', 'chaine', 'avalue', 'This is a constant to add', 1, 'allentities', 1)
 		);
 
 		// Some keys to add into the overwriting translation tables
@@ -188,7 +188,7 @@ class modsendfacrecmail extends DolibarrModules
         // Boxes/Widgets
 		// Add here list of php file(s) stored in sendfacrecmail/core/boxes that contains class to show a widget.
         $this->boxes = array(
-        	0=>array('file'=>'sendfacrecmailwidget1.php@sendfacrecmail','note'=>'Widget provided by sendfacrecmail','enabledbydefaulton'=>'Home'),
+        	//0=>array('file'=>'sendfacrecmailwidget1.php@sendfacrecmail','note'=>'Widget provided by sendfacrecmail','enabledbydefaulton'=>'Home'),
         	//1=>array('file'=>'sendfacrecmailwidget2.php@sendfacrecmail','note'=>'Widget provided by sendfacrecmail'),
         	//2=>array('file'=>'sendfacrecmailwidget3.php@sendfacrecmail','note'=>'Widget provided by sendfacrecmail')
         );
@@ -197,7 +197,7 @@ class modsendfacrecmail extends DolibarrModules
 		// Cronjobs (List of cron jobs entries to add when module is enabled)
 		// unit_frequency must be 60 for minute, 3600 for hour, 86400 for day, 604800 for week
 		$this->cronjobs = array(
-			0=>array('label'=>'MyJob label', 'jobtype'=>'method', 'class'=>'/sendfacrecmail/class/myobject.class.php', 'objectname'=>'MyObject', 'method'=>'doScheduledJob', 'parameters'=>'', 'comment'=>'Comment', 'frequency'=>2, 'unitfrequency'=>3600, 'status'=>0, 'test'=>'$conf->sendfacrecmail->enabled', 'priority'=>50)
+			//0=>array('label'=>'MyJob label', 'jobtype'=>'method', 'class'=>'/sendfacrecmail/class/myobject.class.php', 'objectname'=>'MyObject', 'method'=>'doScheduledJob', 'parameters'=>'', 'comment'=>'Comment', 'frequency'=>2, 'unitfrequency'=>3600, 'status'=>0, 'test'=>'$conf->sendfacrecmail->enabled', 'priority'=>50)
 		);
 		// Example: $this->cronjobs=array(0=>array('label'=>'My label', 'jobtype'=>'method', 'class'=>'/dir/class/file.class.php', 'objectname'=>'MyClass', 'method'=>'myMethod', 'parameters'=>'param1, param2', 'comment'=>'Comment', 'frequency'=>2, 'unitfrequency'=>3600, 'status'=>0, 'test'=>'$conf->sendfacrecmail->enabled', 'priority'=>50),
 		//                                1=>array('label'=>'My label', 'jobtype'=>'command', 'command'=>'', 'parameters'=>'param1, param2', 'comment'=>'Comment', 'frequency'=>1, 'unitfrequency'=>3600*24, 'status'=>0, 'test'=>'$conf->sendfacrecmail->enabled', 'priority'=>50)
@@ -206,7 +206,7 @@ class modsendfacrecmail extends DolibarrModules
 
 		// Permissions
 		$this->rights = array();		// Permission array used by this module
-
+		/*
 		$r=0;
 		$this->rights[$r][0] = $this->numero + $r;	// Permission id (must not be already used)
 		$this->rights[$r][1] = 'Read myobject of sendfacrecmail';	// Permission label
@@ -227,6 +227,7 @@ class modsendfacrecmail extends DolibarrModules
 		$this->rights[$r][3] = 1; 					// Permission by default for new user (0/1)
 		$this->rights[$r][4] = 'delete';				// In php code, permission will be checked by test if ($user->rights->sendfacrecmail->level1->level2)
 		$this->rights[$r][5] = '';				    // In php code, permission will be checked by test if ($user->rights->sendfacrecmail->level1->level2)
+		*/
 
 
 		// Main menu entries
@@ -236,6 +237,7 @@ class modsendfacrecmail extends DolibarrModules
 		// Add here entries to declare new menus
 
 		/* BEGIN MODULEBUILDER TOPMENU */
+		/*
 		$this->menu[$r++]=array('fk_menu'=>'',			                // '' if this is a top menu. For left menu, use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
 								'type'=>'top',			                // This is a Top menu entry
 								'titre'=>'sendfacrecmail',
@@ -248,6 +250,7 @@ class modsendfacrecmail extends DolibarrModules
 								'perms'=>'1',			                // Use 'perms'=>'$user->rights->sendfacrecmail->level1->level2' if you want your menu with a permission rules
 								'target'=>'',
 								'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
+		*/
 
 		/* END MODULEBUILDER TOPMENU */
 
