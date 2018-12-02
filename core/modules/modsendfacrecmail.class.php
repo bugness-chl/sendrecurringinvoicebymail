@@ -69,7 +69,7 @@ class modsendfacrecmail extends DolibarrModules
 		$this->editor_url = 'https://www.bugness.org';
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
-		$this->version = '0.1.0';
+		$this->version = '0.1.1';
 
         //Url to the file with your last numberversion of this module
         //$this->url_last_version = 'http://www.example.com/versionmodule.txt';
@@ -314,20 +314,16 @@ class modsendfacrecmail extends DolibarrModules
 	 */
 	public function init($options='')
 	{
-		$result=$this->_load_tables('/sendfacrecmail/sql/');
-		if ($result < 0) return -1; // Do not activate module if not allowed errors found on module SQL queries (the _load_table run sql with run_sql with error allowed parameter to 'default')
-
-		// Create extrafields
-		include_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
-		$extrafields = new ExtraFields($this->db);
-
-		//$result1=$extrafields->addExtraField('myattr1', "New Attr 1 label", 'boolean', 1,  3, 'thirdparty',   0, 0, '', '', 1, '', 0, 0, '', '', 'sendfacrecmail@sendfacrecmail', '$conf->sendfacrecmail->enabled');
-		//$result2=$extrafields->addExtraField('myattr2', "New Attr 2 label", 'varchar', 1, 10, 'project',      0, 0, '', '', 1, '', 0, 0, '', '', 'sendfacrecmail@sendfacrecmail', '$conf->sendfacrecmail->enabled');
-		//$result3=$extrafields->addExtraField('myattr3', "New Attr 3 label", 'varchar', 1, 10, 'bank_account', 0, 0, '', '', 1, '', 0, 0, '', '', 'sendfacrecmail@sendfacrecmail', '$conf->sendfacrecmail->enabled');
-		//$result4=$extrafields->addExtraField('myattr4', "New Attr 4 label", 'select',  1,  3, 'thirdparty',   0, 1, '', array('options'=>array('code1'=>'Val1','code2'=>'Val2','code3'=>'Val3')), 1 '', 0, 0, '', '', 'sendfacrecmail@sendfacrecmail', '$conf->sendfacrecmail->enabled');
-		//$result5=$extrafields->addExtraField('myattr5', "New Attr 5 label", 'text',    1, 10, 'user',         0, 0, '', '', 1, '', 0, 0, '', '', 'sendfacrecmail@sendfacrecmail', '$conf->sendfacrecmail->enabled');
-
 		$sql = array();
+
+		// we check if our model already exists
+		$result = $this->db->query("SELECT COUNT(*) AS cpt FROM " . MAIN_DB_PREFIX."c_email_templates WHERE module = 'sendfacrecmail'");
+		if ($result) {
+			$row = $this->db->fetch_object($result);
+			if ($row->cpt == 0) {
+				$sql[] = "INSERT INTO " . MAIN_DB_PREFIX."c_email_templates (module, type_template, lang, label, joinfiles, topic, content) VALUES ('sendfacrecmail', 'thirdparty', 'fr_FR', 'Envoi automatique de facture via sendfacrecmail', '1', '[__MYCOMPANY_NAME__] Nouvelle facture __REF__', 'Bonjour,\n\nNouvelle facture ci-jointe.\n\nEn cas de règlement par virement, merci d''indiquer dans le libellé la référence du contrat : __CONTRACT_REF__ .\n\nCordialement,\nle nouveau robot de l''équipe tréso.')";
+			}
+		}
 
 		return $this->_init($sql, $options);
 	}
@@ -343,6 +339,8 @@ class modsendfacrecmail extends DolibarrModules
 	public function remove($options = '')
 	{
 		$sql = array();
+
+		$sql[] = "DELETE FROM " . MAIN_DB_PREFIX."c_email_templates WHERE module = 'sendfacrecmail'";
 
 		return $this->_remove($sql, $options);
 	}

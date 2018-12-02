@@ -73,60 +73,91 @@ class Actionssendfacrecmail
 	 * @param   HookManager     $hookmanager    Hook manager propagated to allow calling another hook
 	 * @return  int                             < 0 on error, 0 on success, 1 to replace standard code
 	 */
-	public function doActions($parameters, &$object, &$action, $hookmanager)
-	{
-		global $conf, $user, $langs;
-
-		$error = 0; // Error counter
-
-		$fp = fopen('/tmp/vardump.txt', 'w');
-		fwrite($fp, serialize($parameters, $object, $action, $hookmanager));
-		fclose($fp);
-		return 0;
-
-		/* print_r($parameters); print_r($object); echo "action: " . $action; */
-		if (in_array($parameters['currentcontext'], array('somecontext1','somecontext2')))	    // do something only for the context 'somecontext1' or 'somecontext2'
-		{
-			// Do what you want here...
-			// You can for example call global vars like $fieldstosearchall to overwrite them, or update database depending on $action and $_POST values.
-		}
-
-		if (! $error) {
-			$this->results = array('myreturn' => 999);
-			$this->resprints = 'A text to show';
-			return 0; // or return 1 to replace standard code
-		} else {
-			$this->errors[] = 'Error message';
-			return -1;
-		}
-	}
-	public function writeSQL($parameters, &$object, &$action, $hookmanager)
-	{
-		global $conf, $user, $langs;
-
-		$error = 0; // Error counter
-		//$object = "SELECT rowid FROM llx_facture_rec WHERE false";
-
-		$fp = fopen('/tmp/writesql-vardump.txt', 'w');
-		fwrite($fp, serialize($parameters));
-		fwrite($fp, serialize($object));
-		fwrite($fp, serialize($action));
-		fwrite($fp, serialize($hookmanager));
-		fclose($fp);
-		return 0;
-	}
 	public function generatedInvoice($parameters, &$object, &$action, $hookmanager)
 	{
 		global $conf, $user, $langs;
 
 		$error = 0; // Error counter
 
-		$fp = fopen('/tmp/generatedinvoice-vardump.txt', 'w');
-		fwrite($fp, serialize($parameters));
-		fwrite($fp, serialize($object));
-		fwrite($fp, serialize($action));
-		fwrite($fp, serialize($hookmanager));
-		fclose($fp);
-		return 0;
+		$facturerec = $parameters['facturerec'];
+
+		// On n'envoie la facture que si elle est validée
+		if ( ! $object->brouillon) {
+			if ($this->envoiMail($object, $facturerec)) {
+				dol_syslog("Success sending email for " . $facturerec->ref . " (id:" . $facturerec->id . ").");
+			} else {
+				$this->errors[] = "Error sending email for " . $facturerec->ref . " (id:" . $facturerec->id . ").";
+				dol_syslog("Error sending email for " . $facturerec->ref . " (id:" . $facturerec->id . ").");
+				$error++;
+			}
+		}
+
+		return ($error ? -1 : 0);
+	}
+
+	/**
+	 * Fonction écrite un peu à l'arrache mais l'existant de Dolibarr
+	 * ne semble pas très accessible.
+	 *
+	 * @return  boolean  True si envoi réussi
+	 */
+	function envoiMail($facture, $recurringFacture)
+	{
+		global $mysoc, $langs, $conf;
+
+		// récupération du template du mail
+		// (pas très précise mais je commence à en avoir marre de creuser tout dolibarr pour trouver les bonnes fonctions...)
+		$result = $this->db->query("SELECT * from " . MAIN_DB_PREFIX . "c_email_templates WHERE module = 'sendfacrecmail' and active = 1 and enabled = '1' ORDER BY tms DESC LIMIT 1");
+		if ( ! $result or ! ($template = $this->db->fetch_object($result))) {
+			return false;
+		}
+
+		// L'objet n'est pas à jour ('manque last_main_doc entre autres)
+		$facture->fetch($facture->id);
+
+		// Préparation des remplacements dans le sujet et le corps du mail
+		$substitutionarray = getCommonSubstitutionArray($langs, 0, null, $facture);
+		//complete_substitutions_array($substitutionarray, $langs, $facture);  // lourd et n'a rien ajouté lors de mes tests
+		// Par contre, il nous manque quelques trucs utiles...
+		if ( ! empty($facture->linkedObjects['contrat'])) {
+			$contrat = reset($facture->linkedObjects['contrat']); // on prend le premier qui vient.
+			$substitutionarray['__CONTRACT_REF__'] = $contrat->ref;
+		}
+
+		// Substitutions
+		$subject = make_substitutions($template->topic,   $substitutionarray, $langs);
+		$body    = make_substitutions($template->content, $substitutionarray, $langs);
+
+		// On regarde si on doit joindre le fichier
+		$filePath = array();
+		$fileMime = array();
+		$fileName = array();
+		if ($template->joinfiles) {
+			$filePath = array(DOL_DATA_ROOT . '/' . $facture->last_main_doc);
+			$fileMime = array('application/pdf'); // FIXME: à rendre dynamique, même si ce sera toujours du PDF ?
+			$fileName = array(basename($facture->last_main_doc));
+		}
+
+		// envoi du mail
+		$mailfile = new CMailFile(
+			$subject,         // sujet
+			$facture->thirdparty->name . ' <' . $facture->thirdparty->email . '>', //destinataire
+			$conf->global->MAIN_MAIL_EMAIL_FROM, // expéditeur (from)
+			$body,            // corps du mail
+			$filePath,
+			$fileMime,
+			$fileName,
+			'', // CC
+			'', // BCC
+			0,  //deliveryreceipt
+			0,  //msgishtml
+			$conf->global->MAIN_MAIL_ERRORS_TO, //errors-to
+			'', // css
+			'', // trackid
+			'', // moreinheader
+			'standard', // sendcontext
+			$conf->global->MAIN_MAIL_ERRORS_TO); //reply-to
+
+		return $mailfile->sendfile();
 	}
 }
