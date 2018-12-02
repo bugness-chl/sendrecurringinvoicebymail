@@ -69,7 +69,7 @@ class modsendfacrecmail extends DolibarrModules
 		$this->editor_url = 'https://www.bugness.org';
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
-		$this->version = '0.1.1';
+		$this->version = '0.1.2';
 
         //Url to the file with your last numberversion of this module
         //$this->url_last_version = 'http://www.example.com/versionmodule.txt';

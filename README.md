@@ -1,7 +1,7 @@
 # SENDFACRECMAIL FOR <a href="https://www.dolibarr.org">DOLIBARR ERP CRM</a>
 
 ## Features
-Description...
+This module send the PDF generated with recurring invoices by email to the client.
 
 <!--
 ![Screenshot sendfacrecmail](img/screenshot_sendfacrecmail.png?raw=true "sendfacrecmail"){imgmd}
