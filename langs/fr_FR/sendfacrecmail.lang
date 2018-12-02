@@ -18,9 +18,9 @@
 #
 
 # Module label 'ModulesendfacrecmailName'
-ModulesendfacrecmailName = sendfacrecmail
+ModulesendfacrecmailName = SendFacRecMail
 # Module description 'ModulesendfacrecmailDesc'
-ModulesendfacrecmailDesc = Description de sendfacrecmail
+ModulesendfacrecmailDesc = Envoi par mail des factures générées par les modèles
 
 #
 # Page d'administration
