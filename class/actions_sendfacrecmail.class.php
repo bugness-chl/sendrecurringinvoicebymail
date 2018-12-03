@@ -76,74 +76,68 @@ class Actionssendfacrecmail
 	public function generatedInvoice($parameters, &$object, &$action, $hookmanager)
 	{
 		global $conf, $user, $langs;
+		$langs->load('mails');
 
 		$error = 0; // Error counter
 
 		$facturerec = $parameters['facturerec'];
 
 		// On n'envoie la facture que si elle est validée
-		if ( ! $object->brouillon) {
-			if ($this->envoiMail($object, $facturerec)) {
-				dol_syslog("Success sending email for " . $facturerec->ref . " (id:" . $facturerec->id . ").");
-			} else {
-				$this->errors[] = "Error sending email for " . $facturerec->ref . " (id:" . $facturerec->id . ").";
-				dol_syslog("Error sending email for " . $facturerec->ref . " (id:" . $facturerec->id . ").");
-				$error++;
-			}
+		if ($object->brouillon) {
+			return 0;
 		}
-
-		return ($error ? -1 : 0);
-	}
-
-	/**
-	 * Fonction écrite un peu à l'arrache mais l'existant de Dolibarr
-	 * ne semble pas très accessible.
-	 *
-	 * @return  boolean  True si envoi réussi
-	 */
-	function envoiMail($facture, $recurringFacture)
-	{
-		global $mysoc, $langs, $conf;
 
 		// récupération du template du mail
 		// (pas très précise mais je commence à en avoir marre de creuser tout dolibarr pour trouver les bonnes fonctions...)
-		$result = $this->db->query("SELECT * from " . MAIN_DB_PREFIX . "c_email_templates WHERE module = 'sendfacrecmail' and active = 1 and enabled = '1' ORDER BY tms DESC LIMIT 1");
+		$result = $this->db->query("SELECT * FROM " . MAIN_DB_PREFIX . "c_email_templates WHERE module = 'sendfacrecmail' AND active = 1 AND enabled = '1' ORDER BY tms DESC LIMIT 1");
 		if ( ! $result or ! ($template = $this->db->fetch_object($result))) {
-			return false;
+			$this->error = "Can't find mail template for sendfacrecmail";
+			$this->errors[] = $this->error;
+			$error++;
+			return -1;
 		}
 
 		// L'objet n'est pas à jour ('manque last_main_doc entre autres)
-		$facture->fetch($facture->id);
+		$object->fetch($object->id);
 
 		// Préparation des remplacements dans le sujet et le corps du mail
-		$substitutionarray = getCommonSubstitutionArray($langs, 0, null, $facture);
-		//complete_substitutions_array($substitutionarray, $langs, $facture);  // lourd et n'a rien ajouté lors de mes tests
+		$substitutionarray = getCommonSubstitutionArray($langs, 0, null, $object);
+		complete_substitutions_array($substitutionarray, $langs, $object);  // lourd et n'a rien ajouté lors de mes tests
+
 		// Par contre, il nous manque quelques trucs utiles...
-		if ( ! empty($facture->linkedObjects['contrat'])) {
-			$contrat = reset($facture->linkedObjects['contrat']); // on prend le premier qui vient.
+		if ( ! empty($object->linkedObjects['contrat'])) {
+			$contrat = reset($object->linkedObjects['contrat']); // on prend le premier qui vient.
 			$substitutionarray['__CONTRACT_REF__'] = $contrat->ref;
 		}
 
-		// Substitutions
-		$subject = make_substitutions($template->topic,   $substitutionarray, $langs);
-		$body    = make_substitutions($template->content, $substitutionarray, $langs);
+		// Initialisations and substitutions
+		$sendto   = $object->thirdparty->name . ' <' . $object->thirdparty->email . '>';
+		$from     = $conf->global->MAIN_MAIL_EMAIL_FROM;
+		$errorsTo = $conf->global->MAIN_MAIL_ERRORS_TO;
+		$replyTo  = $conf->global->MAIN_MAIL_ERRORS_TO;
+		$subject  = make_substitutions($template->topic,   $substitutionarray, $langs);
+		$body     = make_substitutions($template->content, $substitutionarray, $langs);
+		if (method_exists($object, 'makeSubstitution')) {
+			$subject = $object->makeSubstitution($subject);
+			$body    = $object->makeSubstitution($body);
+		}
 
 		// On regarde si on doit joindre le fichier
 		$filePath = array();
 		$fileMime = array();
 		$fileName = array();
 		if ($template->joinfiles) {
-			$filePath = array(DOL_DATA_ROOT . '/' . $facture->last_main_doc);
+			$filePath = array(DOL_DATA_ROOT . '/' . $object->last_main_doc);
 			$fileMime = array('application/pdf'); // FIXME: à rendre dynamique, même si ce sera toujours du PDF ?
-			$fileName = array(basename($facture->last_main_doc));
+			$fileName = array(basename($object->last_main_doc));
 		}
 
 		// envoi du mail
 		$mailfile = new CMailFile(
-			$subject,         // sujet
-			$facture->thirdparty->name . ' <' . $facture->thirdparty->email . '>', //destinataire
-			$conf->global->MAIN_MAIL_EMAIL_FROM, // expéditeur (from)
-			$body,            // corps du mail
+			$subject,  // sujet
+			$sendto,   // destinataire
+			$from,     // expéditeur
+			$body,     // corps du mail
 			$filePath,
 			$fileMime,
 			$fileName,
@@ -151,13 +145,43 @@ class Actionssendfacrecmail
 			'', // BCC
 			0,  //deliveryreceipt
 			0,  //msgishtml
-			$conf->global->MAIN_MAIL_ERRORS_TO, //errors-to
+			$errorsTo,
 			'', // css
 			'', // trackid
 			'', // moreinheader
 			'standard', // sendcontext
-			$conf->global->MAIN_MAIL_ERRORS_TO); //reply-to
+			$replyTo);
 
-		return $mailfile->sendfile();
+		if ($mailfile->sendfile()) {
+			dol_syslog("Success sending email for " . $facturerec->ref . " (id:" . $facturerec->id . ").");
+
+			// Adds info to object for trigger
+			// (maybe make a copy of the object instead of modifying it directly ?)
+			$object->email_msgid    = $mailfile->msgid;
+			$object->email_from     = $from;
+			$object->email_subject  = $subject;
+			$object->email_to       = $sendto;
+			//$object->email_tocc    = $sendtocc;
+			//$object->email_tobcc   = $sendtobcc;
+			$object->actiontypecode = 'AC_OTH_AUTO';
+			$object->actionmsg2=$langs->transnoentities('MailSentBy').' '.CMailFile::getValidAddress($from,4,0,1).' '.$langs->transnoentities('To').' '.CMailFile::getValidAddress($sendto,4,0,1);
+			$object->actionmsg = $langs->transnoentities('MailFrom').': '.dol_escape_htmltag($from);
+			$object->actionmsg = dol_concatdesc($object->actionmsg, $langs->transnoentities('MailTo').': '.dol_escape_htmltag($sendto));
+			$object->actionmsg = dol_concatdesc($object->actionmsg, $langs->transnoentities('MailTopic') . ": " . $subject);
+			$object->actionmsg = dol_concatdesc($object->actionmsg, $langs->transnoentities('TextUsedInTheMessageBody') . ":");
+			$object->actionmsg = dol_concatdesc($object->actionmsg, $body);
+
+			// Launch triggers
+			$interface = new Interfaces($this->db);
+			$resultTrigger = $interface->run_triggers('BILL_SENTBYMAIL', $object, $user, $langs, $conf);
+		} else {
+			$this->error    = "Error sending email for " . $facturerec->ref . " (id:" . $facturerec->id . ").";
+			$this->errors[] = $this->error;
+			dol_syslog($this->error);
+			$error++;
+		}
+
+		return ($error ? -1 : 0);
 	}
+
 }
