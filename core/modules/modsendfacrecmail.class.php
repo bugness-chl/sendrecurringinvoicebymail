@@ -69,7 +69,7 @@ class modsendfacrecmail extends DolibarrModules
 		$this->editor_url = 'https://www.bugness.org';
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
-		$this->version = '0.2.1';
+		$this->version = '0.2.2';
 
         //Url to the file with your last numberversion of this module
         //$this->url_last_version = 'http://www.example.com/versionmodule.txt';
@@ -92,7 +92,7 @@ class modsendfacrecmail extends DolibarrModules
 			'models' => 0,                                   	// Set this to 1 if module has its own models directory (core/modules/xxx)
 			//'css' => array('/sendfacrecmail/css/sendfacrecmail.css.php'),	// Set this to relative path of css file if module has its own css file
 	 		//'js' => array('/sendfacrecmail/js/sendfacrecmail.js.php'),          // Set this to relative path of js file if module must load a js on all pages
-			'hooks' => array('creationOfRecurringInvoices'), 	// Set here all hooks context managed by module. To find available hook context, make a "grep -r '>initHooks(' *" on source code. You can also set hook context 'all'
+			'hooks' => array('cron'), 	// Set here all hooks context managed by module. To find available hook context, make a "grep -r '>initHooks(' *" on source code. You can also set hook context 'all'
 			'moduleforexternal' => 0							// Set this to 1 if feature of module are opened to external users
 		);
 
