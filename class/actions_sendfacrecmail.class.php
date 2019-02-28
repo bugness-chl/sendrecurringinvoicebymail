@@ -73,7 +73,7 @@ class Actionssendfacrecmail
 	 * @param   HookManager     $hookmanager    Hook manager propagated to allow calling another hook
 	 * @return  int                             < 0 on error, 0 on success, 1 to replace standard code
 	 */
-	public function generatedInvoice($parameters, &$object, &$action, $hookmanager)
+	public function afterCreationOfRecurringInvoice($parameters, &$object, &$action, $hookmanager)
 	{
 		global $conf, $user, $langs;
 		$langs->load('mails');
@@ -84,6 +84,11 @@ class Actionssendfacrecmail
 
 		// On n'envoie la facture que si elle est validée
 		if ($object->brouillon) {
+			return 0;
+		}
+		// On n'envoie évidemment pas s'il n'y a pas d'adresse email renseignée
+		if (empty($object->thirdparty->email)) {
+			dol_syslog("Empty email for thirdparty " . $object->thirdparty->id . ". Not sending facturerec " . $facturerec->ref . " (id:" . $facturerec->id . ").");
 			return 0;
 		}
 
