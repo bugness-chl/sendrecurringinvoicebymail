@@ -46,7 +46,7 @@ class modsendrecurringinvoicebymail extends DolibarrModules
 
 		// Id for module (must be unique).
 		// Use here a free id (See in Home -> System information -> Dolibarr for list of used modules id).
-		$this->numero = 500331;		// TODO Go on page https://wiki.dolibarr.org/index.php/List_of_modules_id to reserve id number for your module
+		$this->numero = 468101;		// TODO Go on page https://wiki.dolibarr.org/index.php/List_of_modules_id to reserve id number for your module
 		// Key text used to identify module (for permissions, menus, etc...)
 		$this->rights_class = 'sendrecurringinvoicebymail';
 
@@ -69,7 +69,7 @@ class modsendrecurringinvoicebymail extends DolibarrModules
 		$this->editor_url = 'https://code.bugness.org/Dolibarr/sendrecurringinvoicebymail';
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
-		$this->version = '0.2.3';
+		$this->version = '0.2.4';
 
         //Url to the file with your last numberversion of this module
         //$this->url_last_version = 'http://www.example.com/versionmodule.txt';
