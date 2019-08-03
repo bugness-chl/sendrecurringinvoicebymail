@@ -17,24 +17,24 @@
 # Générique
 #
 
-# Module label 'ModulesendfacrecmailName'
-ModulesendfacrecmailName = SendFacRecMail
-# Module description 'ModulesendfacrecmailDesc'
-ModulesendfacrecmailDesc = Envoi par mail des factures générées par les modèles
+# Module label 'ModulesendrecurringinvoicebymailName'
+ModulesendrecurringinvoicebymailName = SendRecurringInvoiceByMail
+# Module description 'ModulesendrecurringinvoicebymailDesc'
+ModulesendrecurringinvoicebymailDesc = Envoi par mail des factures générées par les modèles
 
 #
 # Page d'administration
 #
-sendfacrecmailSetup = Configuration du module sendfacrecmail
+sendrecurringinvoicebymailSetup = Configuration du module sendrecurringinvoicebymail
 Settings = Réglages
-sendfacrecmailSetupPage = Page de configuration du module sendfacrecmail
+sendrecurringinvoicebymailSetupPage = Page de configuration du module sendrecurringinvoicebymail
 
 #
 # Page À propos
 #
 About = À propos
-sendfacrecmailAbout = À propos de sendfacrecmail
-sendfacrecmailAboutPage = Page à propos de sendfacrecmail
+sendrecurringinvoicebymailAbout = À propos de sendrecurringinvoicebymail
+sendrecurringinvoicebymailAboutPage = Page à propos de sendrecurringinvoicebymail
 
 #
 # Page d'exemple

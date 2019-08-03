@@ -1,12 +1,12 @@
-# SendFacRecMail for <a href="https://www.dolibarr.org">DOLIBARR ERP CRM</a>
+# SendRecurringInvoiceByMail for <a href="https://www.dolibarr.org">DOLIBARR ERP CRM</a>
 
 ## Features
 This module send the PDF generated with recurring invoices by email to the client.
 
-This is currently a demo for Dolibarr 9.0.0-beta.
+It requires Dolibarr version 10.0 at least (first version with the 'cron/afterCreationOfRecurringInvoice()' hook).
 
 <!--
-![Screenshot sendfacrecmail](img/screenshot_sendfacrecmail.png?raw=true "sendfacrecmail"){imgmd}
+![Screenshot sendrecurringinvoicebymail](img/screenshot_sendrecurringinvoicebymail.png?raw=true "sendrecurringinvoicebymail"){imgmd}
 -->
 
 Other modules are available on <a href="https://www.dolistore.com" target="_new">Dolistore.com</a>.
@@ -64,11 +64,11 @@ Note: If this screen tell you there is no custom directory, check your setup is 
         
 ### From a GIT repository
 
-- Clone the repository in ```$dolibarr_main_document_root_alt/sendfacrecmail```
+- Clone the repository in ```$dolibarr_main_document_root_alt/sendrecurringinvoicebymail```
 
 ```sh
 cd ....../custom
-git clone git@github.com:bugness-chl/sendfacrecmail.git sendfacrecmail
+git clone git@github.com:bugness-chl/sendrecurringinvoicebymail.git sendrecurringinvoicebymail
 ```
 
 ### <a name="final_steps"></a>Final steps

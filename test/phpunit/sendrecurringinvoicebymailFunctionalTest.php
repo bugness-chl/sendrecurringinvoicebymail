@@ -17,8 +17,8 @@
  */
 
 /**
- * \file    test/functional/sendfacrecmailFunctionalTest.php
- * \ingroup sendfacrecmail
+ * \file    test/functional/sendrecurringinvoicebymailFunctionalTest.php
+ * \ingroup sendrecurringinvoicebymail
  * \brief   Example Selenium test.
  *
  * Put detailed description here.
@@ -29,7 +29,7 @@ namespace test\functional;
 use PHPUnit_Extensions_Selenium2TestCase_WebDriverException;
 
 /**
- * Class sendfacrecmailFunctionalTest
+ * Class sendrecurringinvoicebymailFunctionalTest
  *
  * Requires chromedriver for Google Chrome
  * Requires geckodriver for Mozilla Firefox
@@ -39,9 +39,9 @@ use PHPUnit_Extensions_Selenium2TestCase_WebDriverException;
  * @todo Windows support (IE, Google Chrome, Mozilla Firefox, Safari)
  * @todo OSX support (Safari, Google Chrome, Mozilla Firefox)
  *
- * @package Testsendfacrecmail
+ * @package Testsendrecurringinvoicebymail
  */
-class sendfacrecmailFunctionalTest extends \PHPUnit_Extensions_Selenium2TestCase
+class sendrecurringinvoicebymailFunctionalTest extends \PHPUnit_Extensions_Selenium2TestCase
 {
 	// TODO: move to a global configuration file?
 	/** @var string Base URL of the webserver under test */
@@ -176,12 +176,12 @@ class sendfacrecmailFunctionalTest extends \PHPUnit_Extensions_Selenium2TestCase
 		$module_status_image = $this->byXPath($module_status_image_path);
 		if (strstr($module_status_image->attribute('src'), 'switch_off.png')) {
 			// Enable the module
-			$this->byHref('modsendfacrecmail')->click();
+			$this->byHref('modsendrecurringinvoicebymail')->click();
 		} else {
 			// Disable the module
-			$this->byHref('modsendfacrecmail')->click();
+			$this->byHref('modsendrecurringinvoicebymail')->click();
 			// Reenable the module
-			$this->byHref('modsendfacrecmail')->click();
+			$this->byHref('modsendrecurringinvoicebymail')->click();
 		}
 		// Page reloaded, we need a new Xpath
 		$module_status_image = $this->byXPath($module_status_image_path);
@@ -196,9 +196,9 @@ class sendfacrecmailFunctionalTest extends \PHPUnit_Extensions_Selenium2TestCase
 	 */
 	public function testConfigurationPage()
 	{
-		$this->url('/custom/sendfacrecmail/admin/setup.php');
+		$this->url('/custom/sendrecurringinvoicebymail/admin/setup.php');
 		$this->authenticate();
-		return $this->assertContains('sendfacrecmail/admin/setup.php', $this->url(), 'Configuration page');
+		return $this->assertContains('sendrecurringinvoicebymail/admin/setup.php', $this->url(), 'Configuration page');
 	}
 
 	/**
@@ -209,9 +209,9 @@ class sendfacrecmailFunctionalTest extends \PHPUnit_Extensions_Selenium2TestCase
 	 */
 	public function testAboutPage()
 	{
-		$this->url('/custom/sendfacrecmail/admin/about.php');
+		$this->url('/custom/sendrecurringinvoicebymail/admin/about.php');
 		$this->authenticate();
-		return $this->assertContains('sendfacrecmail/admin/about.php', $this->url(), 'About page');
+		return $this->assertContains('sendrecurringinvoicebymail/admin/about.php', $this->url(), 'About page');
 	}
 
 	/**
@@ -222,7 +222,7 @@ class sendfacrecmailFunctionalTest extends \PHPUnit_Extensions_Selenium2TestCase
 	 */
 	public function testAboutPageRendersMarkdownReadme()
 	{
-		$this->url('/custom/sendfacrecmail/admin/about.php');
+		$this->url('/custom/sendrecurringinvoicebymail/admin/about.php');
 		$this->authenticate();
 		return $this->assertEquals(
 			'Dolibarr Module Template (aka My Module)',
@@ -241,7 +241,7 @@ class sendfacrecmailFunctionalTest extends \PHPUnit_Extensions_Selenium2TestCase
 	{
 		$this->url('/admin/boxes.php');
 		$this->authenticate();
-		return $this->assertContains('sendfacrecmailwidget1', $this->source(), "Box enabled");
+		return $this->assertContains('sendrecurringinvoicebymailwidget1', $this->source(), "Box enabled");
 	}
 
 	/**
@@ -255,7 +255,7 @@ class sendfacrecmailFunctionalTest extends \PHPUnit_Extensions_Selenium2TestCase
 		$this->url('/admin/triggers.php');
 		$this->authenticate();
 		return $this->assertContains(
-			'interface_99_modsendfacrecmail_sendfacrecmailTriggers.class.php',
+			'interface_99_modsendrecurringinvoicebymail_sendrecurringinvoicebymailTriggers.class.php',
 			$this->byTag('body')->text(),
 			"Trigger declared"
 		);
@@ -273,7 +273,7 @@ class sendfacrecmailFunctionalTest extends \PHPUnit_Extensions_Selenium2TestCase
 		$this->authenticate();
 		return $this->assertContains(
 			'tick.png',
-			$this->byXPath('//td[text()="interface_99_modsendfacrecmail_MyTrigger.class.php"]/following::img')->attribute('src'),
+			$this->byXPath('//td[text()="interface_99_modsendrecurringinvoicebymail_MyTrigger.class.php"]/following::img')->attribute('src'),
 			"Trigger enabled"
 		);
 	}

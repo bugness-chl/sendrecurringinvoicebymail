@@ -17,29 +17,29 @@
 # Generic
 #
 
-# Module label 'ModulesendfacrecmailName'
-ModulesendfacrecmailName = SendFacRecMail
-# Module description 'ModulesendfacrecmailDesc'
-ModulesendfacrecmailDesc = Send FactureRec generated invoices by mail to customers
+# Module label 'ModulesendrecurringinvoicebymailName'
+ModulesendrecurringinvoicebymailName = SendRecurringInvoiceByMail
+# Module description 'ModulesendrecurringinvoicebymailDesc'
+ModulesendrecurringinvoicebymailDesc = Send FactureRec generated invoices by mail to customers
 
 #
 # Admin page
 #
-sendfacrecmailSetup = sendfacrecmail setup
+sendrecurringinvoicebymailSetup = sendrecurringinvoicebymail setup
 Settings = Settings
-sendfacrecmailSetupPage = sendfacrecmail setup page
-SENDFACRECMAIL_MYPARAM1 = My param 1
-SENDFACRECMAIL_MYPARAM1Tooltip = My param 1 tooltip
-SENDFACRECMAIL_MYPARAM2=My param 2
-SENDFACRECMAIL_MYPARAM2Tooltip=My param 2 tooltip
+sendrecurringinvoicebymailSetupPage = sendrecurringinvoicebymail setup page
+SENDRECURRINGINVOICEBYMAIL_MYPARAM1 = My param 1
+SENDRECURRINGINVOICEBYMAIL_MYPARAM1Tooltip = My param 1 tooltip
+SENDRECURRINGINVOICEBYMAIL_MYPARAM2=My param 2
+SENDRECURRINGINVOICEBYMAIL_MYPARAM2Tooltip=My param 2 tooltip
 
 
 #
 # About page
 #
 About = About
-sendfacrecmailAbout = About sendfacrecmail
-sendfacrecmailAboutPage = sendfacrecmail about page
+sendrecurringinvoicebymailAbout = About sendrecurringinvoicebymail
+sendrecurringinvoicebymailAboutPage = sendrecurringinvoicebymail about page
 
 #
 # Sample page

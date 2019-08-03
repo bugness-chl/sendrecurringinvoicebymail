@@ -16,17 +16,17 @@
  */
 
 /**
- * \file    sendfacrecmail/class/actions_sendfacrecmail.class.php
- * \ingroup sendfacrecmail
- * \brief   Hook overload for SendFacRecEmail
+ * \file    sendrecurringinvoicebymail/class/actions_sendrecurringinvoicebymail.class.php
+ * \ingroup sendrecurringinvoicebymail
+ * \brief   Hook overload for cron / afterCreationOfRecurringInvoice()
  *
  * Put detailed description here.
  */
 
 /**
- * Class Actionssendfacrecmail
+ * Class Actionssendrecurringinvoicebymail
  */
-class Actionssendfacrecmail
+class Actionssendrecurringinvoicebymail
 {
 	/**
 	* @var DoliDB Database handler.
@@ -94,9 +94,9 @@ class Actionssendfacrecmail
 
 		// récupération du template du mail
 		// (pas très précise mais je commence à en avoir marre de creuser tout dolibarr pour trouver les bonnes fonctions...)
-		$result = $this->db->query("SELECT * FROM " . MAIN_DB_PREFIX . "c_email_templates WHERE module = 'sendfacrecmail' AND active = 1 AND enabled = '1' ORDER BY tms DESC LIMIT 1");
+		$result = $this->db->query("SELECT * FROM " . MAIN_DB_PREFIX . "c_email_templates WHERE module = 'sendrecurringinvoicebymail' AND active = 1 AND enabled = '1' ORDER BY tms DESC LIMIT 1");
 		if ( ! $result or ! ($template = $this->db->fetch_object($result))) {
-			$this->error = "Can't find mail template for sendfacrecmail";
+			$this->error = "Can't find mail template for sendrecurringinvoicebymail";
 			$this->errors[] = $this->error;
 			$error++;
 			return -1;
