@@ -101,7 +101,7 @@ class modsendrecurringinvoicebymail extends DolibarrModules
 		$this->dirs = array("/sendrecurringinvoicebymail/temp");
 
 		// Config pages. Put here list of php page, stored into sendrecurringinvoicebymail/admin directory, to use to setup module.
-		$this->config_page_url = array("setup.php@sendrecurringinvoicebymail");
+		//$this->config_page_url = array("setup.php@sendrecurringinvoicebymail");
 
 		// Dependencies
 		$this->hidden = false;			// A condition to hide module
