@@ -321,7 +321,7 @@ class modsendrecurringinvoicebymail extends DolibarrModules
 		if ($result) {
 			$row = $this->db->fetch_object($result);
 			if ($row->cpt == 0) {
-				$sql[] = "INSERT INTO " . MAIN_DB_PREFIX."c_email_templates (module, type_template, lang, label, joinfiles, topic, content) VALUES ('sendrecurringinvoicebymail', 'thirdparty', 'fr_FR', 'Envoi automatique de facture via sendrecurringinvoicebymail', '1', '[__MYCOMPANY_NAME__] Nouvelle facture __REF__', 'Bonjour,\n\nNouvelle facture ci-jointe.\n\nEn cas de règlement par virement, merci d''indiquer dans le libellé la référence du contrat : __CONTRACT_REF__ .\n\nCordialement,\nle nouveau robot de l''équipe tréso.')";
+				$sql[] = "INSERT INTO " . MAIN_DB_PREFIX."c_email_templates (module, type_template, lang, label, joinfiles, topic, content) VALUES ('sendrecurringinvoicebymail', 'facture_send', 'fr_FR', 'Envoi automatique de facture via sendrecurringinvoicebymail', '1', '[__MYCOMPANY_NAME__] Nouvelle facture __REF__', 'Bonjour,\n\nNouvelle facture ci-jointe.\n\nMerci de régler par virement (IBAN en bas de la facture) en indiquant :\n- la référence de la facture __REF__ lors d''un virement ponctuel,\n- ou la référence du contrat __CONTRACT_REF__ si virement récurrent.\n\nCordialement,\nle nouveau robot de l''équipe tréso.')";
 			}
 		}
 
