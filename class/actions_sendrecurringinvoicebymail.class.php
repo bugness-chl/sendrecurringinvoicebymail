@@ -104,6 +104,7 @@ class Actionssendrecurringinvoicebymail
 
 		// L'objet n'est pas à jour ('manque last_main_doc entre autres)
 		$object->fetch($object->id);
+		$object->fetch_thirdparty();
 
 		// Préparation des remplacements dans le sujet et le corps du mail
 		$substitutionarray = getCommonSubstitutionArray($langs, 0, null, $object);
