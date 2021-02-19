@@ -69,7 +69,7 @@ class modsendrecurringinvoicebymail extends DolibarrModules
 		$this->editor_url = 'https://code.bugness.org/Dolibarr/sendrecurringinvoicebymail';
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
-		$this->version = '0.2.5';
+		$this->version = '0.2.6';
 
         //Url to the file with your last numberversion of this module
         //$this->url_last_version = 'http://www.example.com/versionmodule.txt';
@@ -321,7 +321,16 @@ class modsendrecurringinvoicebymail extends DolibarrModules
 		if ($result) {
 			$row = $this->db->fetch_object($result);
 			if ($row->cpt == 0) {
-				$sql[] = "INSERT INTO " . MAIN_DB_PREFIX."c_email_templates (module, type_template, lang, label, joinfiles, topic, content) VALUES ('sendrecurringinvoicebymail', 'facture_send', 'fr_FR', 'Envoi automatique de facture via sendrecurringinvoicebymail', '1', '[__MYCOMPANY_NAME__] Nouvelle facture __REF__', 'Bonjour,\n\nNouvelle facture ci-jointe.\n\nMerci de régler par virement (IBAN en bas de la facture) en indiquant :\n- la référence de la facture __REF__ lors d''un virement ponctuel,\n- ou la référence du contrat __CONTRACT_REF__ si virement récurrent.\n\nCordialement,\nle nouveau robot de l''équipe tréso.')";
+				$sql[] = "INSERT INTO " . MAIN_DB_PREFIX."c_email_templates
+					(module, type_template, lang, label, joinfiles, topic, content)
+					VALUES (
+					'sendrecurringinvoicebymail',
+					'facture_send',
+					'',
+					'SendRecurringInvoiceByMail : original template',
+					'1',
+					'[__MYCOMPANY_NAME__] __(NewBill)__ __REF__',
+					'__(Hello)__,\n\nPlease find attached your new invoice.\n\nIn case of payment via bank transfer (our bank infos added at the bottom of the invoice), remember to add some references :\n- invoice number __REF__ for a one-time transfer,\n- or the contract/subscription reference __CONTRACT_REF__ for periodic transfers.\n\n__(Sincerely)__,\n\n__MYCOMPANY_NAME__')";
 			}
 		}
 

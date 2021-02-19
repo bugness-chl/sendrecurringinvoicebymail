@@ -1,7 +1,10 @@
 # SendRecurringInvoiceByMail for <a href="https://www.dolibarr.org">DOLIBARR ERP CRM</a>
 
 ## Features
+
 This module send the PDF generated with recurring invoices by email to the client.
+
+You can customize the mail template in Home > Setup > Emails > Email templates.
 
 It requires Dolibarr version 10.0 at least (first version with the 'cron/afterCreationOfRecurringInvoice()' hook).
 
