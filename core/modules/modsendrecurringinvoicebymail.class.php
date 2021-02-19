@@ -69,7 +69,7 @@ class modsendrecurringinvoicebymail extends DolibarrModules
 		$this->editor_url = 'https://code.bugness.org/Dolibarr/sendrecurringinvoicebymail';
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
-		$this->version = '0.2.4';
+		$this->version = '0.2.5';
 
         //Url to the file with your last numberversion of this module
         //$this->url_last_version = 'http://www.example.com/versionmodule.txt';
@@ -78,7 +78,7 @@ class modsendrecurringinvoicebymail extends DolibarrModules
 		// Name of image file used for this module.
 		// If file is in theme/yourtheme/img directory under name object_pictovalue.png, use this->picto='pictovalue'
 		// If file is in module/img directory under name object_pictovalue.png, use this->picto='pictovalue@module'
-		$this->picto='generic';
+		$this->picto = 'sendrecurringinvoicebymail@sendrecurringinvoicebymail';
 
 		// Define some features supported by module (triggers, login, substitutions, menus, css, etc...)
 		$this->module_parts = array(
