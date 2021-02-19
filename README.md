@@ -6,6 +6,31 @@ This module send the PDF generated with recurring invoices by email to the clien
 
 You can customize the mail template in Home > Setup > Emails > Email templates.
 
+Beta - test in progress : you can also customize for each template invoice, by adding some of those blocks in the private notes of the template.
+```
+This is a good client (this is outside of the %%% blocks so it won't appear in the mails :)
+
+%%% sendrecurringinvoicebymail::body
+Hello dear client,
+
+Please find attached... invoice __REF__...
+
+__(Sincerely)__,
+
+__MYCOMPANY_NAME__
+%%%
+
+%%% sendrecurringinvoicebymail::subject
+My custom subject
+%%%
+%%% sendrecurringinvoicebymail::sendto
+test1@example.org, "Mr. Test2" <test2@example.com>
+%%%
+```
+
+
+## Requirements
+
 It requires Dolibarr version 10.0 at least (first version with the 'cron/afterCreationOfRecurringInvoice()' hook).
 
 <!--
@@ -16,11 +41,11 @@ Other modules are available on <a href="https://www.dolistore.com" target="_new"
 
 
 
+<!--
 ### Translations
 
 Translations can be define manually by editing files into directories *langs*. 
 
-<!--
 This module contains also a sample configuration for Transifex, under the hidden directory [.tx](.tx), so it is possible to manage translation using this service. 
 
 For more informations, see the [translator's documentation](https://wiki.dolibarr.org/index.php/Translator_documentation).

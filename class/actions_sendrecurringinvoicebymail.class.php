@@ -82,17 +82,12 @@ class Actionssendrecurringinvoicebymail
 
 		$facturerec = $parameters['facturerec'];
 
-		// On n'envoie la facture que si elle est validée
+		// We only send the mail when the invoice is not a draft
 		if ($object->brouillon) {
 			return 0;
 		}
-		// On n'envoie évidemment pas s'il n'y a pas d'adresse email renseignée
-		if (empty($object->thirdparty->email)) {
-			dol_syslog("Empty email for thirdparty " . $object->thirdparty->id . ". Not sending facturerec " . $facturerec->ref . " (id:" . $facturerec->id . ").");
-			return 0;
-		}
 
-		// récupération du template du mail
+		// Fetch the mail template
 		// (pas très précise mais je commence à en avoir marre de creuser tout dolibarr pour trouver les bonnes fonctions...)
 		$result = $this->db->query("SELECT * FROM " . MAIN_DB_PREFIX . "c_email_templates WHERE module = 'sendrecurringinvoicebymail' AND active = 1 AND enabled = '1' ORDER BY tms DESC LIMIT 1");
 		if ( ! $result or ! ($template = $this->db->fetch_object($result))) {
@@ -102,29 +97,44 @@ class Actionssendrecurringinvoicebymail
 			return -1;
 		}
 
-		// Préparation des remplacements dans le sujet et le corps du mail
+		// Prepare the substitions for mail's subject and body
 		$substitutionarray = getCommonSubstitutionArray($langs, 0, null, $object);
 		complete_substitutions_array($substitutionarray, $langs, $object);  // lourd et n'a rien ajouté lors de mes tests
 
-		// Par contre, il nous manque quelques trucs utiles...
+		// Adding some useful substitions of our own...
 		if ( ! empty($object->linkedObjects['contrat'])) {
-			$contrat = reset($object->linkedObjects['contrat']); // on prend le premier qui vient.
+			$contrat = reset($object->linkedObjects['contrat']); // no deep search, we take the first linked contract
 			$substitutionarray['__CONTRACT_REF__'] = $contrat->ref;
 		}
 
-		// Initialisations and substitutions
-		$sendto   = $object->thirdparty->name . ' <' . $object->thirdparty->email . '>';
-		$from     = $conf->global->MAIN_MAIL_EMAIL_FROM;
-		$errorsTo = $conf->global->MAIN_MAIL_ERRORS_TO;
-		$replyTo  = $conf->global->MAIN_MAIL_ERRORS_TO;
-		$subject  = make_substitutions($template->topic,   $substitutionarray, $langs);
-		$body     = make_substitutions($template->content, $substitutionarray, $langs);
-		if (method_exists($object, 'makeSubstitution')) {
-			$subject = $object->makeSubstitution($subject);
-			$body    = $object->makeSubstitution($body);
+		// Initialisations
+		$mail_data = array(
+			'sendto'   => $object->thirdparty->name . ' <' . $object->thirdparty->email . '>',
+			'from'     => $conf->global->MAIN_MAIL_EMAIL_FROM,
+			'errorsTo' => $conf->global->MAIN_MAIL_ERRORS_TO,
+			'replyTo'  => $conf->global->MAIN_MAIL_ERRORS_TO,
+			'subject'  => $template->topic,
+			'body'     => $template->content,
+		);
+
+		// If the invoice has some custom parameters (subject, body, sendto, ...)
+		$mail_data = array_merge($mail_data, $this->getCustomFieldsMail($object));
+
+		// Check that we have a recipient, to avoid some frequent error...
+		if (empty($mail_data['sendto'])) {
+			dol_syslog("Empty recipient for thirdparty " . $object->thirdparty->id . ". Not sending facturerec " . $facturerec->ref . " (id:" . $facturerec->id . ").");
+			return 0;
 		}
 
-		// On regarde si on doit joindre le fichier
+		// Make the substitutions
+		foreach (array('subject', 'body') as $key) {
+			$mail_data[$key] = make_substitutions($mail_data[$key], $substitutionarray, $langs);
+			if (method_exists($object, 'makeSubstitution')) {
+				$mail_data[$key] = $object->makeSubstitution($mail_data[$key]);
+			}
+		}
+
+		// Check if we have to attach the file
 		$filePath = array();
 		$fileMime = array();
 		$fileName = array();
@@ -134,12 +144,12 @@ class Actionssendrecurringinvoicebymail
 			$fileName = array(basename($object->last_main_doc));
 		}
 
-		// envoi du mail
+		// At last, send the mail
 		$mailfile = new CMailFile(
-			$subject,  // sujet
-			$sendto,   // destinataire
-			$from,     // expéditeur
-			$body,     // corps du mail
+			$mail_data['subject'],
+			$mail_data['sendto'],
+			$mail_data['from'],
+			$mail_data['body'],
 			$filePath,
 			$fileMime,
 			$fileName,
@@ -147,12 +157,12 @@ class Actionssendrecurringinvoicebymail
 			'', // BCC
 			0,  //deliveryreceipt
 			0,  //msgishtml
-			$errorsTo,
+			$mail_data['errorsTo'],
 			'', // css
 			'', // trackid
 			'', // moreinheader
 			'standard', // sendcontext
-			$replyTo);
+			$mail_data['replyTo']);
 
 		if ($mailfile->sendfile()) {
 			dol_syslog("Success sending email for " . $facturerec->ref . " (id:" . $facturerec->id . ").");
@@ -160,18 +170,18 @@ class Actionssendrecurringinvoicebymail
 			// Adds info to object for trigger
 			// (maybe make a copy of the object instead of modifying it directly ?)
 			$object->email_msgid    = $mailfile->msgid;
-			$object->email_from     = $from;
-			$object->email_subject  = $subject;
-			$object->email_to       = $sendto;
+			$object->email_from     = $mail_data['from'];
+			$object->email_subject  = $mail_data['subject'];
+			$object->email_to       = $mail_data['sendto'];
 			//$object->email_tocc    = $sendtocc;
 			//$object->email_tobcc   = $sendtobcc;
 			$object->actiontypecode = 'AC_OTH_AUTO';
-			$object->actionmsg2=$langs->transnoentities('MailSentBy').' '.CMailFile::getValidAddress($from,4,0,1).' '.$langs->transnoentities('To').' '.CMailFile::getValidAddress($sendto,4,0,1);
-			$object->actionmsg = $langs->transnoentities('MailFrom').': '.dol_escape_htmltag($from);
-			$object->actionmsg = dol_concatdesc($object->actionmsg, $langs->transnoentities('MailTo').': '.dol_escape_htmltag($sendto));
-			$object->actionmsg = dol_concatdesc($object->actionmsg, $langs->transnoentities('MailTopic') . ": " . $subject);
+			$object->actionmsg2=$langs->transnoentities('MailSentBy').' '.CMailFile::getValidAddress($mail_data['from'],4,0,1).' '.$langs->transnoentities('To').' '.CMailFile::getValidAddress($mail_data['sendto'],4,0,1);
+			$object->actionmsg = $langs->transnoentities('MailFrom').': '.dol_escape_htmltag($mail_data['from']);
+			$object->actionmsg = dol_concatdesc($object->actionmsg, $langs->transnoentities('MailTo').': '.dol_escape_htmltag($mail_data['sendto']));
+			$object->actionmsg = dol_concatdesc($object->actionmsg, $langs->transnoentities('MailTopic') . ": " . $mail_data['subject']);
 			$object->actionmsg = dol_concatdesc($object->actionmsg, $langs->transnoentities('TextUsedInTheMessageBody') . ":");
-			$object->actionmsg = dol_concatdesc($object->actionmsg, $body);
+			$object->actionmsg = dol_concatdesc($object->actionmsg, $mail_data['body']);
 
 			// Launch triggers
 			$interface = new Interfaces($this->db);
@@ -184,6 +194,53 @@ class Actionssendrecurringinvoicebymail
 		}
 
 		return ($error ? -1 : 0);
+	}
+
+
+	/**
+	 * FIXME: For the time being, we abuse of note_private to store our customizations
+	 */
+	public function getCustomFieldsMail($object)
+	{
+		return $this->parseCustomFieldsMail($object->note_private);
+	}
+
+	/**
+	 * FIXME: For the time being, we abuse of note_private to store our customizations
+	 *
+	 * This expect something like this in note_private:
+	 *  This is a good client... (other private infos)
+	 *  %%% sendrecurringinvoicebymail::subject
+	 *  New invoice __REF__
+	 *  %%%
+	 *  %%% sendrecurringinvoicebymail::sendto
+	 *  recipient1@example.org, recipient2@example.org
+	 *  %%%
+	 *  %%% sendrecurringinvoicebymail::body
+	 *  Hello dear client,
+	 *  Please find attached...
+	 *  %%%
+	 */
+	public function parseCustomFieldsMail($data)
+	{
+		$output = [];
+
+		// Remove eventual windows' "\r"
+		$data = str_replace("\r", "", $data);
+
+		$regexps = array(
+			'subject' => '/(^|\n)%%% sendrecurringinvoicebymail::subject\n(?<subject>.*)%%%(\n|$)/sU',
+			'body'    => '/(^|\n)%%% sendrecurringinvoicebymail::body\n(?<body>.*)%%%(\n|$)/sU',
+			'sendto'  => '/(^|\n)%%% sendrecurringinvoicebymail::sendto\n(?<sendto>.*)%%%(\n|$)/sU',
+		);
+		foreach ($regexps as $key => $r) {
+			$result_regexp = [];
+			if (preg_match_all($r, $data, $result_regexp)) {
+				$output[$key] = trim($result_regexp[$key][0]);
+			}
+		}
+
+		return $output;
 	}
 
 }

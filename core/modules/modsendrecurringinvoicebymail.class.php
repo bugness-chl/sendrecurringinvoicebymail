@@ -69,10 +69,10 @@ class modsendrecurringinvoicebymail extends DolibarrModules
 		$this->editor_url = 'https://code.bugness.org/Dolibarr/sendrecurringinvoicebymail';
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
-		$this->version = '0.2.6';
+		$this->version = '0.2.7';
 
-        //Url to the file with your last numberversion of this module
-        //$this->url_last_version = 'http://www.example.com/versionmodule.txt';
+		//Url to the file with your last numberversion of this module
+		//$this->url_last_version = 'http://www.example.com/versionmodule.txt';
 		// Key used in llx_const table to save module status enabled/disabled (where SENDRECURRINGINVOICEBYMAIL is value of property name of module in uppercase)
 		$this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
 		// Name of image file used for this module.
