@@ -99,8 +99,6 @@ class Actionssendrecurringinvoicebymail
 			return 0;
 		}
 
-		$contact = reset($contacts);
-
 		// Fetch the mail template
 		// (pas très précise mais je commence à en avoir marre de creuser tout dolibarr pour trouver les bonnes fonctions...)
 		$result = $this->db->query("SELECT * FROM " . MAIN_DB_PREFIX . "c_email_templates WHERE module = 'sendrecurringinvoicebymail' AND active = 1 AND enabled = '1' ORDER BY tms DESC LIMIT 1");
@@ -118,9 +116,23 @@ class Actionssendrecurringinvoicebymail
 		// Adding some useful substitions of our own...
 		$substitutionarray['__CONTRACT_REF__'] = $contract->ref;
 
+		$sendto = '';
+		foreach($contacts as $contact) {
+			if (empty($contact['email'])) {
+				continue;
+			}
+
+			$sendto .= $contact['firstname'] . ' ' . $contact['lastname'] . ' <' . $contact['email'] . '>,';
+		}
+
+		if (empty($sendto)) {
+			dol_syslog("No billing contact with an email for contract " . $contract->id . ". Not sending facturerec " . $facturerec->ref . " (id:" . $facturerec->id . ").");
+			return 0;
+		}
+
 		// Initialisations
 		$mail_data = array(
-			'sendto'   => $contact['firstname'] . ' ' . $contact['lastname'] . ' <' . $contact['email'] . '>',
+			'sendto'   => $sendto,
 			'from'     => $conf->global->MAIN_MAIL_EMAIL_FROM,
 			'errorsTo' => $conf->global->MAIN_MAIL_ERRORS_TO,
 			'replyTo'  => $conf->global->MAIN_MAIL_ERRORS_TO,
@@ -130,12 +142,6 @@ class Actionssendrecurringinvoicebymail
 
 		// If the invoice has some custom parameters (subject, body, sendto, ...)
 		$mail_data = array_merge($mail_data, $this->getCustomFieldsMail($object));
-
-		// Check that we have a recipient, to avoid some frequent error...
-		if (empty($mail_data['sendto'])) {
-			dol_syslog("Empty recipient for contact " . $contact['id'] . ". Not sending facturerec " . $facturerec->ref . " (id:" . $facturerec->id . ").");
-			return 0;
-		}
 
 		// Make the substitutions
 		foreach (array('subject', 'body') as $key) {
