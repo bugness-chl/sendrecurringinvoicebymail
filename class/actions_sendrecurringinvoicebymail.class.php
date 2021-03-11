@@ -87,6 +87,20 @@ class Actionssendrecurringinvoicebymail
 			return 0;
 		}
 
+		if (empty($object->linkedObjects['contrat'])) {
+			return 0;
+		}
+
+		$contract = reset($object->linkedObjects['contrat']);
+
+		$contacts = $contract->liste_contact(-1, 'external', 0, 'BILLING');
+		if (empty($contacts)) {
+			dol_syslog("No billing contact for contract " . $contract->id . ". Not sending facturerec " . $facturerec->ref . " (id:" . $facturerec->id . ").");
+			return 0;
+		}
+
+		$contact = reset($contacts);
+
 		// Fetch the mail template
 		// (pas très précise mais je commence à en avoir marre de creuser tout dolibarr pour trouver les bonnes fonctions...)
 		$result = $this->db->query("SELECT * FROM " . MAIN_DB_PREFIX . "c_email_templates WHERE module = 'sendrecurringinvoicebymail' AND active = 1 AND enabled = '1' ORDER BY tms DESC LIMIT 1");
@@ -102,14 +116,11 @@ class Actionssendrecurringinvoicebymail
 		complete_substitutions_array($substitutionarray, $langs, $object);  // lourd et n'a rien ajouté lors de mes tests
 
 		// Adding some useful substitions of our own...
-		if ( ! empty($object->linkedObjects['contrat'])) {
-			$contrat = reset($object->linkedObjects['contrat']); // no deep search, we take the first linked contract
-			$substitutionarray['__CONTRACT_REF__'] = $contrat->ref;
-		}
+		$substitutionarray['__CONTRACT_REF__'] = $contract->ref;
 
 		// Initialisations
 		$mail_data = array(
-			'sendto'   => $object->thirdparty->name . ' <' . $object->thirdparty->email . '>',
+			'sendto'   => $contact['firstname'] . ' ' . $contact['lastname'] . ' <' . $contact['email'] . '>',
 			'from'     => $conf->global->MAIN_MAIL_EMAIL_FROM,
 			'errorsTo' => $conf->global->MAIN_MAIL_ERRORS_TO,
 			'replyTo'  => $conf->global->MAIN_MAIL_ERRORS_TO,
@@ -122,7 +133,7 @@ class Actionssendrecurringinvoicebymail
 
 		// Check that we have a recipient, to avoid some frequent error...
 		if (empty($mail_data['sendto'])) {
-			dol_syslog("Empty recipient for thirdparty " . $object->thirdparty->id . ". Not sending facturerec " . $facturerec->ref . " (id:" . $facturerec->id . ").");
+			dol_syslog("Empty recipient for contact " . $contact['id'] . ". Not sending facturerec " . $facturerec->ref . " (id:" . $facturerec->id . ").");
 			return 0;
 		}
 
