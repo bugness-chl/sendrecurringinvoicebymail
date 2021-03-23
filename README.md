@@ -2,62 +2,31 @@
 
 ## Features
 
-This module send the PDF generated with recurring invoices by email to the client.
+(en) This module send the invoice generated with recurring invoices by email to the client.
 
-You can customize the mail template in Home > Setup > Emails > Email templates.
+(fr) Ce module envoie par mail les factures générées automatiquement par les travaux planifiés et les factures modèles.
 
-Beta - test in progress : you can also customize for each template invoice, by adding some of those blocks in the private notes of the template.
-```
-This is a good client (this is outside of the %%% blocks so it won't appear in the mails :)
+You can customize the mail globally or by recurring invoice.
 
-%%% sendrecurringinvoicebymail::body
-Hello dear client,
+![Screenshot n° 1](img/screenshot1.png?raw=true)
 
-Please find attached... invoice __REF__...
+To edit the default global mail template, go to Home > Setup > Emails > Email templates, and modify the `SendRecurringInvoiceByMail : original template`. If you don't want to attach the PDF of the invoice to the mails, set the `Attach file` input to 0 (default: 1, PDF attached).
 
-__(Sincerely)__,
+To edit the default sender address, go to Home > Setup > Emails, and edit the `Sender email for automatic emails` field.
 
-__MYCOMPANY_NAME__
-%%%
-
-%%% sendrecurringinvoicebymail::subject
-My custom subject
-%%%
-%%% sendrecurringinvoicebymail::sendto
-test1@example.org, "Mr. Test2" <test2@example.com>
-%%%
-```
+This module is triggered by the cron (Scheduled jobs module) and will not send emails when manually generating an invoice.
 
 
 ## Requirements
 
-It requires Dolibarr version 10.0 at least (first version with the 'cron/afterCreationOfRecurringInvoice()' hook).
+It requires Dolibarr version 10.0 at least (first version with the `cron/afterCreationOfRecurringInvoice()` hook).
 
-<!--
-![Screenshot sendrecurringinvoicebymail](img/screenshot_sendrecurringinvoicebymail.png?raw=true "sendrecurringinvoicebymail"){imgmd}
--->
+Don't forget to also activate the **Scheduled jobs** module.
 
 Other modules are available on <a href="https://www.dolistore.com" target="_new">Dolistore.com</a>.
 
 
-
-<!--
-### Translations
-
-Translations can be define manually by editing files into directories *langs*. 
-
-This module contains also a sample configuration for Transifex, under the hidden directory [.tx](.tx), so it is possible to manage translation using this service. 
-
-For more informations, see the [translator's documentation](https://wiki.dolibarr.org/index.php/Translator_documentation).
-
-There is a [Transifex project](https://transifex.com/projects/p/dolibarr-module-template) for this module.
--->
-
-
-<!--
-
-Install
--------
+## Install
 
 ### From the ZIP file and GUI interface
 
@@ -99,7 +68,7 @@ cd ....../custom
 git clone git@github.com:bugness-chl/sendrecurringinvoicebymail.git sendrecurringinvoicebymail
 ```
 
-### <a name="final_steps"></a>Final steps
+### Final steps
 
 From your browser:
 
@@ -108,12 +77,14 @@ From your browser:
   - You should now be able to find and enable the module
 
 
+## Updating instructions
 
--->
+* Disable the module,
+* Update the files (see Install),
+* Re-enable the module.
 
 
-Licenses
---------
+## Licenses
 
 ### Main code
 

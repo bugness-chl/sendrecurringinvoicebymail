@@ -41,13 +41,12 @@ About = About
 sendrecurringinvoicebymailAbout = About sendrecurringinvoicebymail
 sendrecurringinvoicebymailAboutPage = sendrecurringinvoicebymail about page
 
-#
-# Sample page
-#
-MyPageName = My page name
-
-#
-# Sample widget
-#
-MyWidget = My widget
-MyWidgetDescription = My widget description
+# Tab title on the fiche-rec page
+CustomizationTitle = Customization
+CustomizationIntro = Below, you can override the global email template for this particular recurring invoice. To remove all customization, click on the %s button.
+CustomizationLinkToGlobalTemplate = As a note, the global email template can be found <a href="%s">here</a>.
+OptionEnable = Send mail when generating via cron (cf. module "Scheduled Jobs")
+Reset = Reset
+ResetDone = Reset done : customization deleted
+ResetTooltipNoCustomisationToReset = No customization to delete.
+SendingByMail = Sending by email

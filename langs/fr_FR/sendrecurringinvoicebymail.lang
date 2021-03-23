@@ -37,12 +37,13 @@ sendrecurringinvoicebymailAbout = À propos de sendrecurringinvoicebymail
 sendrecurringinvoicebymailAboutPage = Page à propos de sendrecurringinvoicebymail
 
 #
-# Page d'exemple
+# Page de personnalisation par modèle
 #
-MyPageName = Nom de ma page
-
-#
-# Box d'exemple
-#
-MyWidget = Mon widget
-MyWidgetDescription = Description de mon widget
+CustomizationTitle = Personnalisation
+CustomizationIntro = Ci-dessous, vous pouvez personnaliser les emails pour cette facture-modèle. Pour annuler toute personnalisation, cliquez sur le bouton '%s'.
+CustomizationLinkToGlobalTemplate = Pour mémoire, le template global est configurable par <a href="%s">ici</a>.
+OptionEnable = Envoyer par email lors d'une génération automatique via le module "Travaux planifiés"
+Reset = Réinitialiser
+ResetDone = Réinitialisation effectuée : personnalisation supprimée.
+ResetTooltipNoCustomisationToReset = Aucune personnalisation à supprimer.
+SendingByMail = Envoi par courriel
