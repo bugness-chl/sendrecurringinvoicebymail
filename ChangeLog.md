@@ -1,5 +1,13 @@
 # CHANGELOG SENDRECURRINGINVOICEBYMAIL FOR <a href="https://www.dolibarr.org">DOLIBARR ERP CRM</a>
 
+## 0.3.1
+
+Small enhancements and fixes :
+
+* links to the configuration of global elements (mail template, sender address)
+* display attached files in the agenda's event
+* fix the 0.2.7 "hacky way" import into the 0.3.0 way
+
 ## 0.3.0
 Dedicated tab on the template invoice's page, to be able to customize more cleanly the recipients, and the email content.
 
