@@ -244,7 +244,7 @@ do {
     $output .= '<div class="titre inline-block" style="margin-top: 1.5em;">' . $langs->trans("CustomizationTitle") . "</div>\n";
     // TODO: translation
     $output .= "<p>" . $langs->trans('CustomizationIntro', $langs->trans('Reset')) . "<br />\n";
-    $output .= $langs->trans('CustomizationLinkToGlobalTemplate', DOL_URL_ROOT . '/admin/mails_templates.php?search_label=sendrecurring') . "</p>\n\n";
+    $output .= $langs->trans('CustomizationLinkToGlobalTemplate', DOL_URL_ROOT . '/admin/mails_templates.php?search_label=sendrecurring', DOL_URL_ROOT . '/admin/mails.php') . "</p>\n\n";
 
     $output .= '<table class="tableforemailform boxtablenotop" width="100%">';
     $output .= '<tr><td class="fieldrequired minwidth200">'.$langs->trans("MailFrom").'</td><td>';
