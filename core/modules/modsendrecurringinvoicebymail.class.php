@@ -354,7 +354,7 @@ class modsendrecurringinvoicebymail extends DolibarrModules
                 $mail_data = $this->parseCustomFieldsMail($row->note_private);
                 $sid = $row->sid;
                 if (! $sid) {
-                    $this->db->query("INSERT INTO " . MAIN_DB_PREFIX . "sribm_custom_mail_info (fk_facture_rec) VALUES (" . (int)$row->rid . ")");
+                    $this->db->query("INSERT INTO " . MAIN_DB_PREFIX . "sribm_custom_mail_info (fk_facture_rec, fromtype, frommail) VALUES (" . (int)$row->rid . ", 'robot', '" . $this->db->escape($conf->global->MAIN_MAIL_EMAIL_FROM) . "')");
                     $sid = $this->db->last_insert_id(MAIN_DB_PREFIX . 'sribm_custom_mail_info');
                 }
                 foreach (array('subject' => 'subject', 'body' => 'body_plaintext', 'sendto' => 'sendto_free') as $key => $item) {
@@ -365,7 +365,7 @@ class modsendrecurringinvoicebymail extends DolibarrModules
                         if ($key == 'sendto') {
                             // If the note_private specified a recipient, we disable sending to the
                             // main societe's mail.
-                            $this->db->query("UPDATE " . MAIN_DB_PREFIX . "sribm_custom_mail_info SET sendto_thirdparty = 0 WHERE rowid = " . (int)$row->rid);
+                            $this->db->query("UPDATE " . MAIN_DB_PREFIX . "sribm_custom_mail_info SET sendto_thirdparty = 0 WHERE rowid = " . (int)$sid);
                         }
                     }
                 }

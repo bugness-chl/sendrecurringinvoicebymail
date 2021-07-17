@@ -3,6 +3,8 @@
 ## 0.3.0
 Dedicated tab on the template invoice's page, to be able to customize more cleanly the recipients, and the email content.
 
+The hacky way of 0.2.7 is converted at installation (reinstallation for upgrade) but is not used after that and the support will be dropped in a future release.
+
 ## 0.2.7
 Add the possibility to overwrite some email fields (recipients, subject, body) for each template.
 
