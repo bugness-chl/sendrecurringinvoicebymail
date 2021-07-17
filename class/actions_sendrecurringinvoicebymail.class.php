@@ -180,6 +180,8 @@ class Actionssendrecurringinvoicebymail
             $object->actionmsg = dol_concatdesc($object->actionmsg, $langs->transnoentities('MailTopic') . ": " . $mail_data['subject']);
             $object->actionmsg = dol_concatdesc($object->actionmsg, $langs->transnoentities('TextUsedInTheMessageBody') . ":");
             $object->actionmsg = dol_concatdesc($object->actionmsg, $mail_data['message']);
+            $object->actionmsg = dol_concatdesc($object->actionmsg, "\n----- Attached file(s) -----");
+            $object->actionmsg = dol_concatdesc($object->actionmsg, implode(', ', $fileName));
 
             // Launch triggers
             $interface = new Interfaces($this->db);
