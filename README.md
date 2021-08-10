@@ -2,7 +2,7 @@
 
 ## Features
 
-(en) This module send the invoice generated with recurring invoices by email to the client.
+(en) This module sends by email the invoice generated with recurring invoices via scheduled jobs.
 
 (fr) Ce module envoie par mail les factures générées automatiquement par les travaux planifiés et les factures modèles.
 
@@ -30,11 +30,18 @@ Other modules are available on <a href="https://www.dolistore.com" target="_new"
 
 ### From the ZIP file and GUI interface
 
-- If you get the module in a zip file (like when downloading it from the market place [Dolistore](https://www.dolistore.com)), go into
-menu ```Home - Setup - Modules - Deploy external module``` and upload the zip file.
+Go to `Home` > `Setup` > `Modules/Applications` and finally the `Deploy/install external app/module` tab
+and upload the module_sendrecurringinvoicebymail-x.y.z.zip file (you can get it from the
+[original forge](https://code.bugness.org/Dolibarr/sendrecurringinvoicebymail/releases)
+or [Github](https://github.com/bugness-chl/sendrecurringinvoicebymail/releases)).
+
+Next, on the `Modules/Applications` page, activate the newly available sendrecurringinvoicebymail module,
+and probably the Scheduled jobs (alias cron or modCron) integrated module too.
 
 
-Note: If this screen tell you there is no custom directory, check your setup is correct: 
+#### Troubleshooting
+
+Note: If the module screen tells you there is no custom directory, check that your setup is correct: 
 
 - In your Dolibarr installation directory, edit the ```htdocs/conf/conf.php``` file and check that following lines are not commented:
 
@@ -68,9 +75,7 @@ cd ....../custom
 git clone git@github.com:bugness-chl/sendrecurringinvoicebymail.git sendrecurringinvoicebymail
 ```
 
-### Final steps
-
-From your browser:
+Then, from your browser:
 
   - Log into Dolibarr as a super-administrator
   - Go to "Setup" -> "Modules"
@@ -94,7 +99,7 @@ GPLv3 or (at your option) any later version.
 
 See file COPYING for more information.
 
-#### Documentation
+### Documentation
 
 All texts and readmes.
 
