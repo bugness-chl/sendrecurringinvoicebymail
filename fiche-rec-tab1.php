@@ -56,16 +56,12 @@ do {
      */
 
     // Load necessary data
-    $object = new FactureRec($db);
     $mailObject = new SRIBMCustomMailInfo($db);
     $form = new Form($db);
-    if ($object->fetch($id) <= 0 or !$object->id)
-    {
+    if ($mailObject->fetch(null, $id, true) <= 0) {
+        // Note : this should only happen when facture-rec doesn't exist or some database error.
+        //        If sribmcustommailinfo doesn't exist in database, we should still get a instance of the template.
         setEventMessages($langs->trans("ErrorRecordNotFound"), null, 'errors');
-        break;
-    }
-    if ($mailObject->fetch(null, $object->id, true) <= 0) {
-        setEventMessages("Weird stuff, shouldn't happen : " . $mailObject->error);
         break;
     }
 
@@ -92,7 +88,7 @@ do {
 
     // Substitution array/string
     $helpforsubstitution = $langs->trans('AvailableVariables').' :<br>'."\n";
-    $tmparray = getCommonSubstitutionArray($langs, 0, null, $object);
+    $tmparray = getCommonSubstitutionArray($langs, 0, null, $mailObject->fac_rec_object);
     complete_substitutions_array($tmparray, $langs);
     foreach($tmparray as $key => $val) {
         $helpforsubstitution .= $key . ' -> ' . $langs->trans(dol_string_nohtmltag($val)) . '<br>';
@@ -161,7 +157,7 @@ do {
                     break;
                 }
             } else {
-                $mailObject->fk_facture_rec = $object->id;
+                $mailObject->fk_facture_rec = $mailObject->fac_rec_object->id;
                 if ($mailObject->create($user) < 0) {
                     setEventMessages($langs->trans("ErrorSQL") . ' : ' . $mailObject->error, null, 'errors');
                     break;
@@ -230,7 +226,7 @@ do {
      */
 
     // Same tabs than the main page
-    $head=invoice_rec_prepare_head($object);
+    $head=invoice_rec_prepare_head($mailObject->fac_rec_object);
     $output .= dol_get_fiche_head($head, 'sendrecurringinvoicebymail', $langs->trans("RepeatableInvoice"), -1, 'bill');    // Add a div
     $output .= '<div class="inline-block floatleft valignmiddle refid refidpadding">' . $mailObject->fac_rec_object->ref . "</div>\n";
     $output .= '<div class="refidno">' . $langs->trans('ThirdParty') . ' : ' . $mailObject->fac_rec_object->thirdparty->getNomUrl(1) . "</div>\n";
