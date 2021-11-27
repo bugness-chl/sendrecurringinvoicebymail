@@ -132,6 +132,10 @@ do {
                 setEventMessages("In some configuration, CMailFile doesn't allow empty subject. You should set one.", null, 'warnings');
                 //break;
             }
+            if (! in_array(GETPOST('body_ishtml', 'int'), array('-1', '0', '1'), true)) {
+                setEventMessages("Unexpected body_ishtml value", null, 'errors');
+                break;
+            }
 
             // Feed the input data to the model
             $mailObject->active = GETPOST('active', 'int') ? 1 : 0;
@@ -147,7 +151,8 @@ do {
             $mailObject->sendcc_thirdparty = in_array('thirdparty', GETPOST('sendcc_socpeople', 'array'));
 
             $mailObject->subject = GETPOST('subject', 'alpha');
-            $mailObject->body_plaintext = GETPOST('body_plaintext', 'alpha');
+            $mailObject->body = GETPOST('body', 'alpha');
+            $mailObject->body_ishtml = (int)GETPOST('body_ishtml', 'int');
 
             // Save into database
             if ($mailObject->id) {
@@ -295,7 +300,7 @@ do {
     $output .= '<td><input type="checkbox" name="addmaindocfile" value="1"' . ($tmp_addmaindocfile ? ' checked="checked"' : '') . ' /> ' . $langs->trans("JoinMainDoc") . "</td>\n";
 
 
-    // body_plaintext
+    // body
     $output .= '<tr><td class="minwidth200" valign="top">';
     $output .= $form->textwithpicto($langs->trans("MailText"), $helpforsubstitution, 1, 'help', '', 0, 2, 'substittooltipfrombody');
     $output .= "</td>\n<td>";
@@ -306,10 +311,23 @@ do {
     $doleditor = new DolEditor('body_plaintext', (GETPOST('body_plaintext', 'alpha') ? GETPOST('body_plaintext', 'alpha') : $mailObject->body_plaintext), '', 280);
     $output .= $doleditor->Create(1);
     */
-    $output .= '<textarea id="body_plaintext" name="body_plaintext" rows="14" cols="80" class="flat">';
-    $output .= htmlentities(GETPOST('body_plaintext', 'alpha') ? GETPOST('body_plaintext', 'alpha') : $mailObject->body_plaintext);
+    $output .= '<textarea id="body" name="body" rows="14" cols="80" class="flat">';
+    $output .= htmlentities(GETPOST('body', 'alpha') ? GETPOST('body', 'alpha') : $mailObject->body);
     $output .= "</textarea>\n";
     $output .= "</td></tr>\n";
+
+    // body_ishtml
+    $output .= '<tr><td>' . $langs->trans('MailBodyFormat') . "</td>\n";
+    $tmp_ishtml = (int)(GETPOSTISSET('body_ishtml') ? GETPOST('body_ishtml', 'int') : $mailObject->body_ishtml);
+    // selectarray() does funny things with -1 key, so we build it manually.
+    //$output .= $form->selectarray('body_ishtml', $listBodyIsHtml, $mailObject->body_ishtml);
+    $output .= '<td><select name="body_ishtml">';
+    foreach (array(-1 => 'MailBodyFormatAutoDetect', 0 => 'MailBodyFormatPlainText', 1 => 'MailBodyFormatHtml') as $key => $item) {
+        $output .= '<option value="' . $key . '"';
+        $output .= ($key === $tmp_ishtml) ? ' selected="selected"' : '';
+        $output .= '>' . $langs->trans($item) . "</option>\n";
+    }
+    $output .= "</select>\n</td>\n";
 
     $output .= "</table>\n";
 

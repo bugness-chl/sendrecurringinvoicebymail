@@ -115,7 +115,8 @@ class Actionssendrecurringinvoicebymail
             'errorsTo' => $conf->global->MAIN_MAIL_ERRORS_TO,
             'replyTo'  => $conf->global->MAIN_MAIL_ERRORS_TO,
             'subject'  => $mailObject->subject,
-            'message'  => $mailObject->body_plaintext,
+            'message'  => $mailObject->body,
+            'ishtml'   => $mailObject->body_ishtml,
         );
 
         // Check that we have a recipient, to avoid some frequent error...
@@ -154,7 +155,7 @@ class Actionssendrecurringinvoicebymail
             $mail_data['cc'], // CC
             $mail_data['bcc'], // BCC
             0,  //deliveryreceipt
-            0,  //msgishtml
+            $mail_data['ishtml'],  //msgishtml
             $mail_data['errorsTo'],
             '', // css
             '', // trackid

@@ -357,7 +357,7 @@ class modsendrecurringinvoicebymail extends DolibarrModules
                     $this->db->query("INSERT INTO " . MAIN_DB_PREFIX . "sribm_custom_mail_info (fk_facture_rec, fromtype, frommail) VALUES (" . (int)$row->rid . ", 'robot', '" . $this->db->escape($conf->global->MAIN_MAIL_EMAIL_FROM) . "')");
                     $sid = $this->db->last_insert_id(MAIN_DB_PREFIX . 'sribm_custom_mail_info');
                 }
-                foreach (array('subject' => 'subject', 'body' => 'body_plaintext', 'sendto' => 'sendto_free') as $key => $item) {
+                foreach (array('subject' => 'subject', 'body' => 'body', 'sendto' => 'sendto_free') as $key => $item) {
                     if (! empty($mail_data[$key])) {
                         // We loop on each field.
                         // Not optimized, I know.

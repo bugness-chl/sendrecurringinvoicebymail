@@ -29,6 +29,11 @@ sendrecurringinvoicebymailSetup = Configuration du module sendrecurringinvoiceby
 Settings = Réglages
 sendrecurringinvoicebymailSetupPage = Page de configuration du module sendrecurringinvoicebymail
 
+
+
+
+
+
 #
 # Page À propos
 #
@@ -42,6 +47,10 @@ sendrecurringinvoicebymailAboutPage = Page à propos de sendrecurringinvoicebyma
 CustomizationTitle = Personnalisation
 CustomizationIntro = Ci-dessous, vous pouvez personnaliser les emails pour cette facture-modèle. Pour annuler toute personnalisation, cliquez sur le bouton '%s'.
 CustomizationLinkToGlobalTemplate = Pour mémoire, le template global est <a href="%s">configurable par ici</a>, et l'adresse de l'émetteur par défaut est <a href="%s">configurable par là</a>.
+MailBodyFormat = Format du message
+MailBodyFormatAutoDetect = Auto-detect
+MailBodyFormatPlainText = Texte pur
+MailBodyFormatHtml = HTML
 OptionEnable = Envoyer par email lors d'une génération automatique via le module "Travaux planifiés"
 Reset = Réinitialiser
 ResetDone = Réinitialisation effectuée : personnalisation supprimée.

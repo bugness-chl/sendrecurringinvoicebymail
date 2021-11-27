@@ -109,12 +109,12 @@ class SRIBMCustomMailInfo extends CommonObject
     /**
      * @var string
      */
-    public $body_plaintext;
+    public $body;
 
     /**
-     * @var string  (not used at the moment)
+     * @var int   0: plain text,  1: html,  -1: auto (see CMailFile and dol_ishtml())
      */
-    public $body_html;
+    public $body_ishtml = 0;
 
     // End of database fields
 
@@ -228,7 +228,7 @@ class SRIBMCustomMailInfo extends CommonObject
         $sql .= " SET ";
         $sql .= " fk_facture_rec = " . (int)$this->fk_facture_rec;
         $sql .= ", active = " . (int)$this->active;
-        $sql .= ", addmaindocfile = '" . (int)$this->addmaindocfile . "'";
+        $sql .= ", addmaindocfile = " . (int)$this->addmaindocfile;
         $sql .= ", fromtype = '" . $this->db->escape($this->fromtype) . "'";
         $sql .= ", frommail = '" . $this->db->escape($this->frommail) . "'";
         $sql .= ", sendto_thirdparty  = " . (int)$this->db->escape($this->sendto_thirdparty);
@@ -238,8 +238,8 @@ class SRIBMCustomMailInfo extends CommonObject
         $sql .= ", sendbcc_thirdparty = " . (int)$this->db->escape($this->sendbcc_thirdparty);
         $sql .= ", sendbcc_free = '" . $this->db->escape($this->sendbcc_free) . "'";
         $sql .= ", subject = '" . $this->db->escape($this->subject) . "'";
-        $sql .= ", body_plaintext = '" . $this->db->escape($this->body_plaintext) . "'";
-        $sql .= ", body_html = '" . $this->db->escape($this->body_html) . "'";
+        $sql .= ", body = '" . $this->db->escape($this->body) . "'";
+        $sql .= ", body_ishtml = " . (int)$this->body_ishtml;
         $sql .= " WHERE rowid = " . (int)$this->id;
 
         $result = $this->db->query($sql);
@@ -281,7 +281,7 @@ class SRIBMCustomMailInfo extends CommonObject
     {
         global $conf;
 
-        $sql = "SELECT rowid, fk_facture_rec, active, addmaindocfile, fromtype, frommail, sendto_thirdparty, sendto_free, sendcc_thirdparty, sendcc_free, sendbcc_thirdparty, sendbcc_free, subject, body_plaintext, body_html";
+        $sql = "SELECT rowid, fk_facture_rec, active, addmaindocfile, fromtype, frommail, sendto_thirdparty, sendto_free, sendcc_thirdparty, sendcc_free, sendbcc_thirdparty, sendbcc_free, subject, body, body_ishtml";
         $sql .= " FROM " . MAIN_DB_PREFIX . $this->table_element;
         $sql .= " WHERE " . (isset($ref) ? 'fk_facture_rec = ' . (int)$ref : "rowid = " . (int)$rowid);
 
@@ -309,8 +309,8 @@ class SRIBMCustomMailInfo extends CommonObject
             $this->sendbcc_thirdparty = $obj->sendbcc_thirdparty;
             $this->sendbcc_free = $obj->sendbcc_free;
             $this->subject = $obj->subject;
-            $this->body_plaintext = $obj->body_plaintext;
-            $this->body_html = $obj->body_html;
+            $this->body = $obj->body;
+            $this->body_ishtml = $obj->body_ishtml;
             $ref = $obj->fk_facture_rec;
         } elseif (!$fill_defaults_from_template) {
             $this->error = "SRIBMCustomMailInfo not found (id: " . var_export($rowid, true) . ", ref: " . var_export($ref, true);
@@ -366,7 +366,7 @@ class SRIBMCustomMailInfo extends CommonObject
             }
 
             $this->subject = $template->topic;
-            $this->body_plaintext = $template->content;
+            $this->body = $template->content;
             $this->addmaindocfile = $template->joinfiles;
         }
 
