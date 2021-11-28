@@ -90,9 +90,9 @@ class Actionssendrecurringinvoicebymail
             return -1;
         }
 
-        // We only send the mail when the invoice is not a draft
-        // and the sending is enabled for the template.
-        if ($object->brouillon || !$mailObject->active) {
+        // Abort sending when inactive
+        // (draft invoice or explictly disabled)
+        if (!$mailObject->active) {
             return 0;
         }
 

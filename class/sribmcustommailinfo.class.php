@@ -368,6 +368,9 @@ class SRIBMCustomMailInfo extends CommonObject
             $this->subject = $template->topic;
             $this->body = $template->content;
             $this->addmaindocfile = $template->joinfiles;
+            // By default, we don't send emails when the generated invoice is
+            // still a draft.
+            $this->active = $this->fac_rec_object->auto_validate;
         }
 
         return 1;
