@@ -1,4 +1,15 @@
-# CHANGELOG SENDRECURRINGINVOICEBYMAIL FOR <a href="https://www.dolibarr.org">DOLIBARR ERP CRM</a>
+# CHANGELOG SENDRECURRINGINVOICEBYMAIL FOR [DOLIBARR ERP CRM](https://www.dolibarr.org)
+
+
+## 0.3.2
+
+Note: This release includes a DB schema modification. Reactivate the module to trigger it.
+
+Enhancements:
+
+* Mails can now be sent in HTML (via global module configuration and via the customzation tab).
+* Mails can now be sent even when the invoice is a draft.
+
 
 ## 0.3.1
 
