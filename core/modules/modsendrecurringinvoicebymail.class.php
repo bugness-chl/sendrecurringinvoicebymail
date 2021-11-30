@@ -103,7 +103,7 @@ class modsendrecurringinvoicebymail extends DolibarrModules
         $this->dirs = array("/sendrecurringinvoicebymail/temp");
 
         // Config pages. Put here list of php page, stored into sendrecurringinvoicebymail/admin directory, to use to setup module.
-        //$this->config_page_url = array("setup.php@sendrecurringinvoicebymail");
+        $this->config_page_url = array("setup.php@sendrecurringinvoicebymail");
 
         // Dependencies
         $this->hidden = false;          // A condition to hide module
@@ -124,6 +124,15 @@ class modsendrecurringinvoicebymail extends DolibarrModules
         //                             1=>array('SENDRECURRINGINVOICEBYMAIL_MYNEWCONST2','chaine','myvalue','This is another constant to add',0, 'current', 1)
         // );
         $this->const = array(
+            0 => array(
+                'SENDRECURRINGINVOICEBYMAIL_BODY_ISHTML_DEFAULT',  // key
+                'chaine',   // always 'chaine' ?
+                '0',          // value
+                'default format for mail body : -1 for auto-detect, 0 for plain text, 1 for HTML.',  // desc
+                1,          // visible
+                'current',  // current or allentities
+                0,          // deleteonunactive
+            ),
             //1=>array('SENDRECURRINGINVOICEBYMAIL_MYCONSTANT', 'chaine', 'avalue', 'This is a constant to add', 1, 'allentities', 1)
         );
 

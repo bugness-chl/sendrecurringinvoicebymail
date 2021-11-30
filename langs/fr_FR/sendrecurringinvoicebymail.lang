@@ -28,10 +28,8 @@ ModulesendrecurringinvoicebymailDesc = Envoi par mail des factures générées p
 sendrecurringinvoicebymailSetup = Configuration du module sendrecurringinvoicebymail
 Settings = Réglages
 sendrecurringinvoicebymailSetupPage = Page de configuration du module sendrecurringinvoicebymail
-
-
-
-
+SENDRECURRINGINVOICEBYMAIL_BODY_ISHTML_DEFAULT = Format par défaut du corps du mail
+SENDRECURRINGINVOICEBYMAIL_BODY_ISHTML_DEFAULTTooltip = -1: auto-détection, 0: texte pur, 1: HTML
 
 
 #

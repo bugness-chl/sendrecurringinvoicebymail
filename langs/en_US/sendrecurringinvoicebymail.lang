@@ -28,10 +28,8 @@ ModulesendrecurringinvoicebymailDesc = Send FactureRec generated invoices by mai
 sendrecurringinvoicebymailSetup = sendrecurringinvoicebymail setup
 Settings = Settings
 sendrecurringinvoicebymailSetupPage = sendrecurringinvoicebymail setup page
-SENDRECURRINGINVOICEBYMAIL_MYPARAM1 = My param 1
-SENDRECURRINGINVOICEBYMAIL_MYPARAM1Tooltip = My param 1 tooltip
-SENDRECURRINGINVOICEBYMAIL_MYPARAM2=My param 2
-SENDRECURRINGINVOICEBYMAIL_MYPARAM2Tooltip=My param 2 tooltip
+SENDRECURRINGINVOICEBYMAIL_BODY_ISHTML_DEFAULT = Default mail body's format
+SENDRECURRINGINVOICEBYMAIL_BODY_ISHTML_DEFAULTTooltip = -1 for auto-detect, 0 for plaintext, 1 for HTML
 
 
 #
