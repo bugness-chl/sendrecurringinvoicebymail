@@ -28,6 +28,7 @@ ModulesendrecurringinvoicebymailDesc = Send FactureRec generated invoices by mai
 sendrecurringinvoicebymailSetup = sendrecurringinvoicebymail setup
 Settings = Settings
 sendrecurringinvoicebymailSetupPage = sendrecurringinvoicebymail setup page
+NoticeCronIsDisabled = Notice: the cron / Scheduled Jobs module seems disabled. Unless you know what you are doing, invoices won't be generated and emails won't be sent.
 SENDRECURRINGINVOICEBYMAIL_BODY_ISHTML_DEFAULT = Default mail body's format
 SENDRECURRINGINVOICEBYMAIL_BODY_ISHTML_DEFAULTTooltip = -1 for auto-detect, 0 for plaintext, 1 for HTML
 

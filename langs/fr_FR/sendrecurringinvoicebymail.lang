@@ -28,6 +28,7 @@ ModulesendrecurringinvoicebymailDesc = Envoi par mail des factures générées p
 sendrecurringinvoicebymailSetup = Configuration du module sendrecurringinvoicebymail
 Settings = Réglages
 sendrecurringinvoicebymailSetupPage = Page de configuration du module sendrecurringinvoicebymail
+NoticeCronIsDisabled = Notice : le module cron / Travaux Planifiés semble désactivé. Sauf cas particulier, les factures ne seront pas générées et les mails ne seront pas envoyés.
 SENDRECURRINGINVOICEBYMAIL_BODY_ISHTML_DEFAULT = Format par défaut du corps du mail
 SENDRECURRINGINVOICEBYMAIL_BODY_ISHTML_DEFAULTTooltip = -1: auto-détection, 0: texte pur, 1: HTML
 

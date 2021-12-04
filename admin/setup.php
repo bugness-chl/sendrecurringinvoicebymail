@@ -166,6 +166,11 @@ else
     {
         print '<br>'.$langs->trans("NothingToSetup");
     }
+
+    // Display a notice if the 'cron' module is not enabled
+    if (! in_array('cron', $conf->modules, true)) {
+        print '<div class="info"><p>' . $langs->trans('NoticeCronIsDisabled') . "</p></div>\n";
+    }
 }
 
 
