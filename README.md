@@ -72,7 +72,7 @@ Note: If the module screen tells you there is no custom directory, check that yo
 
 ```sh
 cd ....../custom
-git clone git@github.com:bugness-chl/sendrecurringinvoicebymail.git sendrecurringinvoicebymail
+git clone https://code.bugness.org/Dolibarr/sendrecurringinvoicebymail.git sendrecurringinvoicebymail
 ```
 
 Then, from your browser:
