@@ -14,7 +14,7 @@ To edit the default global mail template, go to Home > Setup > Emails > Email te
 
 To edit the default sender address, go to Home > Setup > Emails, and edit the `Sender email for automatic emails` field.
 
-This module is triggered by the cron (Scheduled jobs module) and will not send emails when manually generating an invoice.
+This module hooks himself on the end of the `Recurring invoices` job from the Scheduled jobs (aka. `cron`) module. It will only be triggered via this Scheduled job and will not send mail when manually generating an invoice from a recurring invoice template.
 
 
 ## Requirements
