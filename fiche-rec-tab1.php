@@ -147,7 +147,7 @@ do {
             $mailObject->sendcc_thirdparty = in_array('thirdparty', GETPOST('sendcc_socpeople', 'array'));
 
             $mailObject->subject = GETPOST('subject', 'alpha');
-            $mailObject->body = GETPOST('body', 'alpha');
+            $mailObject->body = GETPOST('body', 'restricthtml');
             $mailObject->body_ishtml = (int)GETPOST('body_ishtml', 'int');
 
             // Save into database
@@ -300,16 +300,15 @@ do {
     $output .= '<tr><td class="minwidth200" valign="top">';
     $output .= $form->textwithpicto($langs->trans("MailText"), $helpforsubstitution, 1, 'help', '', 0, 2, 'substittooltipfrombody');
     $output .= "</td>\n<td>";
-    /*
-    // doleditor does some weird stuff, adding <br> and newlines, I'll get more into it when I have time.
-    // fallback to simple <textarea> for the time being.
+    
+
     require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
-    $doleditor = new DolEditor('body_plaintext', (GETPOST('body_plaintext', 'alpha') ? GETPOST('body_plaintext', 'alpha') : $mailObject->body_plaintext), '', 280);
+    $doleditor = new DolEditor('body', (GETPOST('body', 'alpha') ? GETPOST('body', 'alpha') : $mailObject->body), '', 280,'dolibarr_notes');
     $output .= $doleditor->Create(1);
-    */
-    $output .= '<textarea id="body" name="body" rows="14" cols="80" class="flat">';
-    $output .= htmlentities(GETPOST('body', 'alpha') ? GETPOST('body', 'alpha') : $mailObject->body);
-    $output .= "</textarea>\n";
+    
+    // $output .= '<textarea id="body" name="body" rows="14" cols="80" class="flat">';
+    // $output .= htmlentities(GETPOST('body', 'alpha') ? GETPOST('body', 'alpha') : $mailObject->body);
+    // $output .= "</textarea>\n";
     $output .= "</td></tr>\n";
 
     // body_ishtml
