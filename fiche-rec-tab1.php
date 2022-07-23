@@ -300,15 +300,21 @@ do {
     $output .= '<tr><td class="minwidth200" valign="top">';
     $output .= $form->textwithpicto($langs->trans("MailText"), $helpforsubstitution, 1, 'help', '', 0, 2, 'substittooltipfrombody');
     $output .= "</td>\n<td>";
-    
+
 
     require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
-    $doleditor = new DolEditor('body', (GETPOST('body', 'alpha') ? GETPOST('body', 'alpha') : $mailObject->body), '', 280,'dolibarr_notes');
+    $doleditor = new DolEditor(
+        'body',
+        (GETPOST('body', 'alpha') ? GETPOST('body', 'alpha') : $mailObject->body),
+        '',
+        280,
+        'dolibarr_mailings', // toolbar name
+        'In', // toolbar location
+        false, // toolbar start expanded
+        true, // use local browser
+        !empty($conf->global->FCKEDITOR_ENABLE_MAIL) // follow global conf about using ckeditor for mails.
+    );
     $output .= $doleditor->Create(1);
-    
-    // $output .= '<textarea id="body" name="body" rows="14" cols="80" class="flat">';
-    // $output .= htmlentities(GETPOST('body', 'alpha') ? GETPOST('body', 'alpha') : $mailObject->body);
-    // $output .= "</textarea>\n";
     $output .= "</td></tr>\n";
 
     // body_ishtml
