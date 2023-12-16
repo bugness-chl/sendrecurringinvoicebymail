@@ -234,6 +234,12 @@ do {
 
     $output .= '<div class="titre inline-block">' . $langs->trans("Options") . "</div>\n";
     $output .= '<form id="sribmform" name="sribmform" method="POST" action="#sribmform">';
+    if (function_exists('newToken')) {
+        $output .= '<input type="hidden" name="token" value="'.newToken().'">';  // CSRF protection
+    } else {
+        // Used before Dolibar 13
+        $output .= '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';  // CSRF protection
+    }
     $output .= '<table class="liste" summary="mail options"><tbody>';
     $output .= '<tr class="oddeven">';
     $output .= '  <td><label for="active">' . $langs->trans('OptionEnable') . "</label></td>\n";
