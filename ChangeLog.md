@@ -1,5 +1,15 @@
 # CHANGELOG SENDRECURRINGINVOICEBYMAIL FOR [DOLIBARR ERP CRM](https://www.dolibarr.org)
 
+## 0.3.4
+
+Fix: the hook was also triggered by supplier invoices.
+Thanks to jpardenoy for the report and the fix.
+
+
+## 0.3.3
+
+Fix: adds CSRF protection.
+
 
 ## 0.3.2
 

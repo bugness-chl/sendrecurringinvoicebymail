@@ -84,6 +84,14 @@ class Actionssendrecurringinvoicebymail
         $error = 0; // Error counter
 
         $facturerec = $parameters['facturerec'];
+        // Since Dolibarr 16, this hook is also used for the FactureFournisseurRec class.
+        if (! $facturerec instanceof FactureRec) {
+            return 0;
+        }
+
+        // Load our own object, linked to this facture
+        // (if it doesn't exist in database, fetch(,,true) will fill the object
+        // from the global mail template)
         $mailObject = new SRIBMCustomMailInfo($this->db);
         if ($mailObject->fetch(null, $facturerec->id, true) != 1) {
             dol_syslog("Error loading SRIBMCustomMailInfo for facture rec " . (isset($facturerec->id) ? $facturerec->id : "(facturerec->id not set ??)"));
