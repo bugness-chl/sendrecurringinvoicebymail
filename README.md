@@ -2,9 +2,9 @@
 
 ## Features
 
-(en) This module sends by email the invoice generated with recurring invoices via scheduled jobs.
+(en) This module sends by email the customer invoice generated with a recurring invoice template via scheduled jobs.
 
-(fr) Ce module envoie par mail les factures générées automatiquement par les travaux planifiés et les factures modèles.
+(fr) Ce module envoie par mail les factures clientes générées automatiquement par les travaux planifiés et les factures modèles.
 
 You can customize the mail globally or by recurring invoice.
 
