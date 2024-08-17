@@ -1,5 +1,13 @@
 # CHANGELOG SENDRECURRINGINVOICEBYMAIL FOR [DOLIBARR ERP CRM](https://www.dolibarr.org)
 
+## 0.3.5
+
+Fix:
+
+* HTML formating was silently removed when used on Dolibarr v.13+ (GH-11)
+* `$conf->global->MAIN_MAIL_ERRORS_TO` might not always be set (cause not found)
+
+
 ## 0.3.4
 
 Fix: the hook was also triggered by supplier invoices.
