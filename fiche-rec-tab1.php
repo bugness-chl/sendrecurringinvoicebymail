@@ -146,8 +146,8 @@ do {
             $mailObject->sendcc_free = GETPOST('sendcc_free', 'alpha');
             $mailObject->sendcc_thirdparty = in_array('thirdparty', GETPOST('sendcc_socpeople', 'array'));
 
-            $mailObject->subject = GETPOST('subject', 'alpha');
-            $mailObject->body = GETPOST('body', 'alpha');
+            $mailObject->subject = GETPOST('subject', 'none');
+            $mailObject->body = GETPOST('body', 'none');
             $mailObject->body_ishtml = (int)GETPOST('body_ishtml', 'int');
 
             // Save into database
