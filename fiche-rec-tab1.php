@@ -103,7 +103,7 @@ do {
     if (GETPOST('save')) {
         do {
             // Validate input data
-            if (! array_key_exists(GETPOST('fromtype', 'alpha'), $listFrom)) {
+            if (! array_key_exists(GETPOST('fromtype'), $listFrom)) {
                 setEventMessages('Unexpected from value', null, 'errors');
                 break;
             }
@@ -116,13 +116,13 @@ do {
                 break;
             }
             // Validate some non-breaking stuff after feeding
-            if (empty(GETPOST('sendto_free', 'alpha')) && empty(GETPOST('sendto_socpeople', 'array'))) {
+            if (empty(GETPOST('sendto_free', 'none')) && empty(GETPOST('sendto_socpeople', 'array'))) {
                 // Kinda weird behaviour from CMailFile but better alert the user beforehand
                 // FIXME: check if there is a workaround ?
                 setEventMessages("In some configuration, CMailFile doesn't allow empty 'to' recipient. You should set at least one.", null, 'warnings');
                 //break;
             }
-            if (! strlen(GETPOST('subject', 'alpha'))) {
+            if (! strlen(GETPOST('subject', 'none'))) {
                 // Kinda weird behaviour from CMailFile but better alert the user beforehand
                 // FIXME: check if there is a workaround ?
                 setEventMessages("In some configuration, CMailFile doesn't allow empty subject. You should set one.", null, 'warnings');
@@ -140,10 +140,10 @@ do {
             $mailObject->fromtype = GETPOST('fromtype', 'alpha');
             $mailObject->frommail = $listFrom[$mailObject->fromtype];
 
-            $mailObject->sendto_free = GETPOST('sendto_free', 'alpha');
+            $mailObject->sendto_free = GETPOST('sendto_free', 'none');
             $mailObject->sendto_thirdparty = in_array('thirdparty', GETPOST('sendto_socpeople', 'array'));
 
-            $mailObject->sendcc_free = GETPOST('sendcc_free', 'alpha');
+            $mailObject->sendcc_free = GETPOST('sendcc_free', 'none');
             $mailObject->sendcc_thirdparty = in_array('thirdparty', GETPOST('sendcc_socpeople', 'array'));
 
             $mailObject->subject = GETPOST('subject', 'none');
