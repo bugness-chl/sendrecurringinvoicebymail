@@ -1,0 +1,74 @@
+# Creates a module_sendrecurringinvoicebymail-X.Y.Z.zip file when pushing a tag
+#
+# This job is mainly useless (Forgejo already creates a usable .zip archive,
+# minus the name) and serves more as a warmup for a decent CI/CD tryout.
+
+on:
+  push:
+    tags:
+      # For the time being, we only trigger on the tags clearly matching a
+      # '1.2.3' version pattern.
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+env:
+  MYFILENAME: "module_sendrecurringinvoicebymail-${{ github.ref_name }}"
+
+jobs:
+  GenerateReleaseZipfile:
+    runs-on: docker
+    container:
+      image: code.bugness.org/chl/alpine-wget-git-zip:latest
+    steps:
+      - name: Download the automatic repository archive
+        run: |
+          # In case the repository is private, we build an authenticated URL
+          # with our action token.
+          MY_GITHUB_AUTHENTICATED_URL="$( echo "$GITHUB_SERVER_URL" | sed "s#^\(https\?://\)#\1$GITHUB_TOKEN\@#" )"
+          wget -O "$MYFILENAME.zip" "$MY_GITHUB_AUTHENTICATED_URL"/"$GITHUB_REPOSITORY"/archive/"$GITHUB_REF_NAME".zip
+
+      - name: A bit of useless cleanup
+        run: |
+          #apk add zip
+          # On Forgejo, GITHUB_REPOSITORY="owner/repo"  (and we just want the 'repo' part)
+          MY_REPOSITORY="$( echo "$GITHUB_REPOSITORY" | sed 's/.*\///' )"
+          zip -d "$MYFILENAME.zip" \
+          "$MY_REPOSITORY/.editorconfig" \
+          "$MY_REPOSITORY/.gitattributes" \
+          "$MY_REPOSITORY/.gitignore" \
+          "$MY_REPOSITORY/.tx*"
+
+      - name: Upload artifact (using v4)
+        run: |
+          set -ex
+
+          # The busybox version of wget does not offer --method=PUT as of 2024-08-26
+          #apk add wget
+
+          # We extract the Actions.Results:22:33 from ACTIONS_RUNTIME_TOKEN
+          # (base64 -d doesn't like when the '==' padding is missing, so 2>/dev/null and relying on the piping to forget about non-zero return code...)
+          read WORKFLOW_RUN_BACKEND_ID WORKFLOW_JOB_RUN_BACKEND_ID <<EOF
+          $( echo "$ACTIONS_RUNTIME_TOKEN" | sed 's/.*\.\(.*\)\..*/\1/' | base64 -d 2>/dev/null | sed 's/.*Actions.Results:\([^:]\+\):\([^:" ]\+\).*/\1 \2/' )
+          EOF
+
+          # Get the upload URL
+          # note: we use the name without .zip, it seems to be added automatically.
+          RESPONSE="$( wget -O - \
+            --header 'Content-Type:application/json' \
+            --header "Authorization: Bearer $GITHUB_TOKEN" \
+            --post-data "$( printf '{"version":4, "name":"%s", "workflow_run_backend_id":"%s", "workflow_job_run_backend_id":"%s"}' "$MYFILENAME" "$WORKFLOW_RUN_BACKEND_ID" "$WORKFLOW_JOB_RUN_BACKEND_ID" )" \
+            "$GITHUB_SERVER_URL"/twirp/github.actions.results.api.v1.ArtifactService/CreateArtifact
+          )"
+          # We get a JSON with an signedUploadUrl similar to :
+          #  https://entrepot.xlii.si/twirp/github.actions.results.api.v1.ArtifactService/UploadArtifact?sig=yWWEI8tIIECp8D7E5TVh4_6G2pZxWaVdQcSYaCsx5s0=&expires=2024-08-26+07%3A20%3A49.886890537+%2B0200+CEST&artifactName=mymodule-1.2.3.zip&taskID=63
+          SIGNED_UPLOAD_URL="$( echo "$RESPONSE" | sed -n 's/.*"signedUploadUrl" *: *"\([^"]\+\)".*/\1/p' )"
+
+          # Upload our file
+          # (note: adding '&comp=block' at the end of the URL)
+          wget --method PUT --body-file "$MYFILENAME.zip" "$SIGNED_UPLOAD_URL&comp=block"
+
+          # Finalize the artifact
+          wget -O - \
+            --header 'Content-Type:application/json' \
+            --header "Authorization: Bearer $GITHUB_TOKEN" \
+            --post-data "$( printf '{"hash":"sha256:%s", "name":"%s", "size":"%d", "workflow_run_backend_id":"%s", "workflow_job_run_backend_id":"%s"}' "$( sha256sum $MYFILENAME.zip | sed 's/[[:space:]]\+.*//' )" "$MYFILENAME" "$( stat -c %s $MYFILENAME.zip )" "$WORKFLOW_RUN_BACKEND_ID" "$WORKFLOW_JOB_RUN_BACKEND_ID" )" \
+            "$GITHUB_SERVER_URL"/twirp/github.actions.results.api.v1.ArtifactService/FinalizeArtifact
