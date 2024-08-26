@@ -69,7 +69,7 @@ class modsendrecurringinvoicebymail extends DolibarrModules
         $this->editor_url = 'https://code.bugness.org/Dolibarr/sendrecurringinvoicebymail';
 
         // Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
-        $this->version = '0.3.5';
+        $this->version = '0.3.6';
 
         //Url to the file with your last numberversion of this module
         //$this->url_last_version = 'http://www.example.com/versionmodule.txt';

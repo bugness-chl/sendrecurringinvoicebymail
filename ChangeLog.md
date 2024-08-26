@@ -1,5 +1,10 @@
 # CHANGELOG SENDRECURRINGINVOICEBYMAIL FOR [DOLIBARR ERP CRM](https://www.dolibarr.org)
 
+## 0.3.6
+
+Fix: freeform email addresses being "html-filtered" `Postmaster <postmaster@bugness.org>` → `Postmaster`
+
+
 ## 0.3.5
 
 Fix:
