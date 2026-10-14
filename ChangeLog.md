@@ -1,5 +1,11 @@
 # CHANGELOG SENDRECURRINGINVOICEBYMAIL FOR [DOLIBARR ERP CRM](https://www.dolibarr.org)
 
+## 0.3.7
+
+Fix: restore the recurring invoice email customization tab on Dolibarr 23+ by
+using the required six-field tab declaration.
+
+
 ## 0.3.6
 
 Fix: freeform email addresses being "html-filtered" `Postmaster <postmaster@bugness.org>` → `Postmaster`

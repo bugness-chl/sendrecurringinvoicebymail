@@ -69,7 +69,7 @@ class modsendrecurringinvoicebymail extends DolibarrModules
         $this->editor_url = 'https://code.bugness.org/Dolibarr/sendrecurringinvoicebymail';
 
         // Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
-        $this->version = '0.3.6';
+        $this->version = '0.3.7';
 
         //Url to the file with your last numberversion of this module
         //$this->url_last_version = 'http://www.example.com/versionmodule.txt';
@@ -151,7 +151,7 @@ class modsendrecurringinvoicebymail extends DolibarrModules
 
         // Array to add new pages in new tabs
         $this->tabs = array();
-        $this->tabs[] = array('data'=>'invoice-rec:+sendrecurringinvoicebymail:SendingByMail:sendrecurringinvoicebymail@sendrecurringinvoicebymail:sendrecurringinvoicebymail/fiche-rec-tab1.php?id=__ID__');                   // To add a new tab identified by code tabname1
+        $this->tabs[] = array('data'=>'invoice-rec:+sendrecurringinvoicebymail:SendingByMail:sendrecurringinvoicebymail@sendrecurringinvoicebymail:1:/sendrecurringinvoicebymail/fiche-rec-tab1.php?id=__ID__');                   // To add a new tab identified by code tabname1
         // Example:
         // $this->tabs[] = array('data'=>'objecttype:+tabname1:Title1:mylangfile@sendrecurringinvoicebymail:$user->rights->sendrecurringinvoicebymail->read:/sendrecurringinvoicebymail/mynewtab1.php?id=__ID__');                      // To add a new tab identified by code tabname1
         // $this->tabs[] = array('data'=>'objecttype:+tabname2:SUBSTITUTION_Title2:mylangfile@sendrecurringinvoicebymail:$user->rights->othermodule->read:/sendrecurringinvoicebymail/mynewtab2.php?id=__ID__',     // To add another new tab identified by code tabname2. Label will be result of calling all substitution functions on 'Title2' key.

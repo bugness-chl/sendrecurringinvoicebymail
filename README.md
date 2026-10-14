@@ -21,6 +21,8 @@ This module hooks himself on the end of the `Recurring invoices` job from the Sc
 
 It requires Dolibarr version 10.0 at least (first version with the `cron/afterCreationOfRecurringInvoice()` hook).
 
+Version 0.3.7 or newer is required for the per-invoice customization tab on Dolibarr 23 and newer.
+
 Don't forget to also activate the **Scheduled jobs** module.
 
 Other modules are available on <a href="https://www.dolistore.com" target="_new">Dolistore.com</a>.
