@@ -153,13 +153,7 @@ class modsendrecurringinvoicebymail extends DolibarrModules
 
         // Array to add new pages in new tabs
         $this->tabs = array();
-        if ((float)DOL_VERSION < 19.0) {
-            // Old way of giving the rights
-            // (note that we probably could simply put '1' or true but we strive for absolute security :)
-            $this->tabs[] = array('data'=>'invoice-rec:+sendrecurringinvoicebymail:SendingByMail:sendrecurringinvoicebymail@sendrecurringinvoicebymail:$user->rights->facture->creer:/sendrecurringinvoicebymail/fiche-rec-tab1.php?id=__ID__');
-        } else {
-            $this->tabs[] = array('data'=>'invoice-rec:+sendrecurringinvoicebymail:SendingByMail:sendrecurringinvoicebymail@sendrecurringinvoicebymail:$user->hasRight("facture", "creer"):/sendrecurringinvoicebymail/fiche-rec-tab1.php?id=__ID__');
-        }
+        $this->tabs[] = array('data'=>'invoice-rec:+sendrecurringinvoicebymail:SendingByMail:sendrecurringinvoicebymail@sendrecurringinvoicebymail:1:/sendrecurringinvoicebymail/fiche-rec-tab1.php?id=__ID__');                   // To add a new tab identified by code tabname1
         // Example:
         // $this->tabs[] = array('data'=>'objecttype:+tabname1:Title1:mylangfile@sendrecurringinvoicebymail:$user->rights->sendrecurringinvoicebymail->read:/sendrecurringinvoicebymail/mynewtab1.php?id=__ID__');                      // To add a new tab identified by code tabname1
         // $this->tabs[] = array('data'=>'objecttype:+tabname2:SUBSTITUTION_Title2:mylangfile@sendrecurringinvoicebymail:$user->rights->othermodule->read:/sendrecurringinvoicebymail/mynewtab2.php?id=__ID__',     // To add another new tab identified by code tabname2. Label will be result of calling all substitution functions on 'Title2' key.
