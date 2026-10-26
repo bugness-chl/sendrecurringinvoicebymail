@@ -70,6 +70,8 @@ class modsendrecurringinvoicebymail extends DolibarrModules
 
         // Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
         $this->version = '0.3.7';
+        // Url to the file with your last numberversion of this module
+        $this->url_last_version = 'https://code.bugness.org/Dolibarr/sendrecurringinvoicebymail/raw/branch/master/versionmodule.txt';
 
         //Url to the file with your last numberversion of this module
         //$this->url_last_version = 'http://www.example.com/versionmodule.txt';
@@ -151,7 +153,13 @@ class modsendrecurringinvoicebymail extends DolibarrModules
 
         // Array to add new pages in new tabs
         $this->tabs = array();
-        $this->tabs[] = array('data'=>'invoice-rec:+sendrecurringinvoicebymail:SendingByMail:sendrecurringinvoicebymail@sendrecurringinvoicebymail:1:/sendrecurringinvoicebymail/fiche-rec-tab1.php?id=__ID__');                   // To add a new tab identified by code tabname1
+        if ((float)DOL_VERSION < 19.0) {
+            // Old way of giving the rights
+            // (note that we probably could simply put '1' or true but we strive for absolute security :)
+            $this->tabs[] = array('data'=>'invoice-rec:+sendrecurringinvoicebymail:SendingByMail:sendrecurringinvoicebymail@sendrecurringinvoicebymail:$user->rights->facture->creer:/sendrecurringinvoicebymail/fiche-rec-tab1.php?id=__ID__');
+        } else {
+            $this->tabs[] = array('data'=>'invoice-rec:+sendrecurringinvoicebymail:SendingByMail:sendrecurringinvoicebymail@sendrecurringinvoicebymail:$user->hasRight("facture", "creer"):/sendrecurringinvoicebymail/fiche-rec-tab1.php?id=__ID__');
+        }
         // Example:
         // $this->tabs[] = array('data'=>'objecttype:+tabname1:Title1:mylangfile@sendrecurringinvoicebymail:$user->rights->sendrecurringinvoicebymail->read:/sendrecurringinvoicebymail/mynewtab1.php?id=__ID__');                      // To add a new tab identified by code tabname1
         // $this->tabs[] = array('data'=>'objecttype:+tabname2:SUBSTITUTION_Title2:mylangfile@sendrecurringinvoicebymail:$user->rights->othermodule->read:/sendrecurringinvoicebymail/mynewtab2.php?id=__ID__',     // To add another new tab identified by code tabname2. Label will be result of calling all substitution functions on 'Title2' key.
